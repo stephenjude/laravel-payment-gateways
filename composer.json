@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "stephenjude/laravel-payment-gateways",
+    "description": "A simple Laravel API implementation for all payment providers like Paystack, Flutterwave, & Paypal etc.",
     "keywords": [
-        ":vendor_name",
+        "stephenjude",
         "laravel",
-        ":package_slug"
+        "laravel-payment-gateways"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/stephenjude/laravel-payment-gateways",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "stephenjude",
+            "email": "stephenjudesuccess@gmail.com",
             "role": "Developer"
         }
     ],
@@ -34,13 +34,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Stephenjude\\PaymentGateway\\": "src",
+            "Stephenjude\\PaymentGateway\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Stephenjude\\PaymentGateway\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -54,10 +54,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Stephenjude\\PaymentGateway\\PaymentGatewayServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "PaymentGateway": "Stephenjude\\PaymentGateway\\Facades\\PaymentGateway"
             }
         }
     },
