@@ -2,7 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\Gateways;
 
-use Illuminate\Support\Facades\Http;
 use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
 use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
 

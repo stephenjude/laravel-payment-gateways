@@ -2,7 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\Contracts;
 
-use Illuminate\Database\Eloquent\Model;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 

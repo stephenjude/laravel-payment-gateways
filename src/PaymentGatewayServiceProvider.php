@@ -2,11 +2,8 @@
 
 namespace Stephenjude\PaymentGateway;
 
-use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Stephenjude\PaymentGateway\Commands\PaymentGatewayCommand;
-use Stephenjude\PaymentGateway\Http\Controllers\PaymentGatewayController;
 
 class PaymentGatewayServiceProvider extends PackageServiceProvider
 {
