@@ -2,7 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\DataObjects;
 
-use Illuminate\Support\Facades\URL;
 use Spatie\LaravelData\Data;
 
 class SessionDataObject extends Data

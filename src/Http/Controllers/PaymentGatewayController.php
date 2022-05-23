@@ -12,11 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PaymentGatewayController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     public function index(Request $request, string $provider, string $reference)
     {
-        if (!$request->hasValidSignature()) {
+        if (! $request->hasValidSignature()) {
             abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
         }
 
@@ -27,7 +29,7 @@ class PaymentGatewayController extends Controller
         }
 
         return view("payment-gateways::checkout.$provider", [
-            'data' => $paymentSession
+            'data' => $paymentSession,
         ]);
     }
 

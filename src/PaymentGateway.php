@@ -20,7 +20,7 @@ class PaymentGateway
     {
         $class = "\\Stephenjude\\PaymentGateway\\Providers\\".ucwords($proivder)."Provider";
 
-        if (class_exists($class) && !(new ReflectionClass($class))->isAbstract()) {
+        if (class_exists($class) && ! (new ReflectionClass($class))->isAbstract()) {
             return new $class();
         }
 
