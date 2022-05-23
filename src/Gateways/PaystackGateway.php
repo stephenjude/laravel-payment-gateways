@@ -11,8 +11,8 @@ class PaystackGateway extends AbstractGateway
     public function __construct()
     {
         $this->baseUrl = 'https://api.paystack.co/';
-        $this->secretKey = config('services.paystack.secret');
-        $this->publicKey = config('services.paystack.public');
+        $this->secretKey = config('payment-gateways.providers.paystack.secret');
+        $this->publicKey = config('payment-gateways.providers.paystack.public');
     }
 
     public function initialize(array $params): mixed

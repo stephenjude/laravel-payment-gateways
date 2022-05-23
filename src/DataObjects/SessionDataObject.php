@@ -2,19 +2,22 @@
 
 namespace Stephenjude\PaymentGateway\DataObjects;
 
+use Illuminate\Support\Facades\URL;
 use Spatie\LaravelData\Data;
 
-class PaymentDataObject extends Data
+class SessionDataObject extends Data
 {
     public function __construct(
         public string $email,
         public ?array $meta,
         public string $amount,
         public string $currency,
-        public string $reference,
+        public ?array $channels,
         public string $provider,
-        public bool $successful,
-        public string $date,
+        public string $reference,
+        public string $checkoutUrl,
+        public string $callbackUrl,
+        public int $expires,
     ) {
     }
 }

@@ -11,6 +11,6 @@ class PaymentGateway extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'laravel-payment-gateways';
+        return \Stephenjude\PaymentGateway\PaymentGateway::class;
     }
 }

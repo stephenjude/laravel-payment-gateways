@@ -4,6 +4,7 @@ namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Support\Facades\Cache;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
+use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -11,17 +12,21 @@ abstract class AbstractProvider implements ProviderInterface
 
     public array $channels;
 
-    public function getInitializedSession(string $sessionReference): array|null
+    public function getInitializedSession(string $sessionReference): SessionDataObject|null
     {
-        return Cache::get($sessionReference);
+        $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
+
+        return Cache::get($sessionCacheKey);
     }
 
     public function deinitializeSession(string $sessionReference): void
     {
-        Cache::forget($sessionReference);
+        $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
+
+        Cache::forget($sessionCacheKey);
     }
 
-    public function setPaymentReference(string $sessionReference, string $paymentReference): void
+    public function setReference(string $sessionReference, string $paymentReference): void
     {
         $key = config('payment-gateway.cache.payment.key').$sessionReference;
 
@@ -30,7 +35,7 @@ abstract class AbstractProvider implements ProviderInterface
         Cache::remember($key, $expires, fn() => $paymentReference);
     }
 
-    public function getPaymentReference(string $sessionReference): string|null
+    public function getReference(string $sessionReference): string|null
     {
         $key = config('payment-gateway.cache.payment.key').$sessionReference;
 
