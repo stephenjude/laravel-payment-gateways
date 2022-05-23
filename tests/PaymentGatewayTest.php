@@ -2,7 +2,8 @@
 
 use Stephenjude\PaymentGateway\PaymentGateway;
 use Stephenjude\PaymentGateway\Providers\AbstractProvider;
+use Stephenjude\PaymentGateway\Providers\PaystackProvider;
 
 it('can make paystack provider', function () {
-    expect(PaymentGateway::make('paystack'))->toBeInstanceOf(AbstractProvider::class);
+    expect(PaymentGateway::make('paystack'))->toBeInstanceOf(PaystackProvider::class);
 });
