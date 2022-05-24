@@ -10,7 +10,6 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
 use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
-use Stephenjude\PaymentGateway\Gateways\FlutterwaveGateway;
 
 class FlutterwaveProvider extends AbstractProvider
 {
@@ -40,7 +39,7 @@ class FlutterwaveProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             email: $email,
             meta: $meta,
             amount: $amount * 100,
