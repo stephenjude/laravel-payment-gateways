@@ -1,6 +1,6 @@
 @extends('payment-gateways::layout')
 
-@section('title', 'Paystack')
+@section('title', 'Paystack Checkout')
 
 @section('content')
     @include('payment-gateways::loader')

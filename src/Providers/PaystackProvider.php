@@ -35,6 +35,7 @@ class PaystackProvider extends AbstractProvider
             channels: $this->getChannels(),
             provider: $this->provider,
             reference: $reference,
+            checkoutSecret: null,
             checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), [
                 'reference' => $reference,
                 'provider' => $this->provider,
@@ -53,7 +54,7 @@ class PaystackProvider extends AbstractProvider
 
         return new PaymentDataObject(
             email: $payment['customer']['email'],
-            meta: $payment['metadata'] ?? null,
+            meta: $payment['metadata'],
             amount: ($payment['amount'] / 100),
             currency: $payment['currency'],
             reference: $paymentReference,

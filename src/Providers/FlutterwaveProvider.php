@@ -35,6 +35,7 @@ class FlutterwaveProvider extends AbstractProvider
             channels: $this->getChannels(),
             provider: $this->provider,
             reference: $reference,
+            checkoutSecret: null,
             checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), [
                 'reference' => $reference,
                 'provider' => $this->provider,

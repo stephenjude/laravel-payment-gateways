@@ -56,7 +56,7 @@ return [
         ],
         'stripe' => [
             'name' => 'stripe',
-            'channels' => ['card', 'acss_debit', 'alipay', 'klarna', 'us_bank_account'],
+            'channels' => ['card', 'acss_debit', 'us_bank_account'],
             'base_url' => env('STRIPE_API_URL', 'https://api.stripe.com/v1'),
             'public' => env('STRIPE_PUBLIC'),
             'secret' => env('STRIPE_SECRET'),

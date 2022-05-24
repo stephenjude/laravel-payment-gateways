@@ -1,6 +1,6 @@
 @extends('gateways.layout')
 
-@section('title', 'Flutterwave')
+@section('title', 'Flutterwave Checkout')
 
 @section('content')
     @include('payment-gateways::loader')
