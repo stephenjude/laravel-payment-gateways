@@ -42,7 +42,7 @@ class PaypalProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             email: $email,
             meta: $meta,
             amount: $amount * 100,
