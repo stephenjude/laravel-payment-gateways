@@ -8,13 +8,15 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
-use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
-use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
-use Stephenjude\PaymentGateway\Gateways\PaystackGateway;
+use Stephenjude\PaymentGateway\Gateways\PaypalGateway;
 
-class PaystackProvider extends AbstractProvider
+class PaypalProvider extends AbstractProvider
 {
-    public string $provider = 'paystack';
+    public string $provider = 'paypal';
+
+    public function __construct()
+    {
+    }
 
     public function setChannels(array $channels): self
     {
@@ -25,7 +27,7 @@ class PaystackProvider extends AbstractProvider
 
     public function getChannels(): array|null
     {
-        return $this->channels ?? config('payment-gateways.providers.paystack.channels');
+        return $this->channels ?? config('payment-gateways.providers.paypal.channels');
     }
 
     public function initializeSession(
@@ -62,7 +64,7 @@ class PaystackProvider extends AbstractProvider
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null
     {
-        $payment = $this->verifyProvider($paymentReference);
+        $payment = (new PaypalGateway())->verify($paymentReference);
 
         return new PaymentDataObject(
             email: $payment['customer']['email'],
@@ -74,23 +76,5 @@ class PaystackProvider extends AbstractProvider
             successful: $payment['status'] === 'success',
             date: Carbon::parse($payment['transaction_date'])->toDateTimeString(),
         );
-    }
-
-    public function initializeProvider(array $params): mixed
-    {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $params);
-
-        throw_if($response->failed(), new PaymentInitializationException());
-
-        return $response->json('data');
-    }
-
-    public function verifyProvider(string $reference): mixed
-    {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transaction/verify/$reference");
-
-        throw_if($response->failed(), new PaymentVerificationException());
-
-        return $response->json('data');
     }
 }

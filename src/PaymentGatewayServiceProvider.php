@@ -16,8 +16,4 @@ class PaymentGatewayServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasMigration('create_laravel-payment-gateways_table');
     }
-
-    public function packageBooted()
-    {
-    }
 }

@@ -43,8 +43,30 @@ return [
         'paystack' => [
             'name' => 'paystack',
             'channels' => ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
+            'base_url' => 'https://api.paystack.co/',
             'public' => env('PAYSTACK_PUBLIC'),
             'secret' => env('PAYSTACK_SECRET'),
+        ],
+        'flutterwave' => [
+            'name' => 'flutterwave',
+            'channels' => ['card', 'banktransfer', 'ussd', 'credit', 'mpesa', 'qr'],
+            'base_url' => 'https://api.flutterwave.com/v3/',
+            'public' => env('FLUTTERWAVE_PUBLIC'),
+            'secret' => env('FLUTTERWAVE_SECRET'),
+        ],
+        'stripe' => [
+            'name' => 'stripe',
+            'channels' => ['card', 'acss_debit', 'alipay', 'klarna', 'us_bank_account'],
+            'base_url' => 'https://api.paystack.co/',
+            'public' => env('STRIPE_PUBLIC'),
+            'secret' => env('STRIPE_SECRET'),
+        ],
+        'paypal' => [
+            'name' => 'paypal',
+            'channels' => null,
+            'base_url' => 'https://api.paystack.co/',
+            'public' => env('PAYPAL_PUBLIC'),
+            'secret' => env('PAYPAL_SECRET'),
         ],
     ],
 ];

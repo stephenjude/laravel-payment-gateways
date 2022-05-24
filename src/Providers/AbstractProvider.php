@@ -2,15 +2,30 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 
 abstract class AbstractProvider implements ProviderInterface
 {
+    public string $baseUrl;
+
+    public string $secretKey;
+
+    public string $publicKey;
+
     public string $provider;
 
     public array $channels;
+
+    public function __construct()
+    {
+        $this->baseUrl = config("payment-gateways.providers.$this->provider.base_url");
+        $this->secretKey = config("payment-gateways.providers.$this->provider.secret");
+        $this->publicKey = config("payment-gateways.providers.$this->provider.public");
+    }
 
     public function getInitializedSession(string $sessionReference): SessionDataObject|null
     {
@@ -32,7 +47,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $expires = config('payment-gateway.cache.payment.expries');
 
-        Cache::remember($key, $expires, fn () => $paymentReference);
+        Cache::remember($key, $expires, fn() => $paymentReference);
     }
 
     public function getReference(string $sessionReference): string|null
@@ -41,4 +56,13 @@ abstract class AbstractProvider implements ProviderInterface
 
         return Cache::get($key);
     }
+
+    public function http(): PendingRequest
+    {
+        return Http::withToken($this->secretKey)->acceptJson();
+    }
+
+    public abstract function initializeProvider(array $params): mixed;
+
+    public abstract function verifyProvider(string $paymentReference): mixed;
 }

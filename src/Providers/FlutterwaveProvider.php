@@ -10,11 +10,11 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
 use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
-use Stephenjude\PaymentGateway\Gateways\PaystackGateway;
+use Stephenjude\PaymentGateway\Gateways\FlutterwaveGateway;
 
-class PaystackProvider extends AbstractProvider
+class FlutterwaveProvider extends AbstractProvider
 {
-    public string $provider = 'paystack';
+    public string $provider = 'flutterwave';
 
     public function setChannels(array $channels): self
     {
@@ -25,7 +25,7 @@ class PaystackProvider extends AbstractProvider
 
     public function getChannels(): array|null
     {
-        return $this->channels ?? config('payment-gateways.providers.paystack.channels');
+        return $this->channels ?? config('payment-gateways.providers.flutterwave.channels');
     }
 
     public function initializeSession(
@@ -34,7 +34,7 @@ class PaystackProvider extends AbstractProvider
         string $email,
         array $meta = []
     ): SessionDataObject {
-        $reference = 'PTK_'.Str::random(10);
+        $reference = 'FLW_'.Str::random(10);
 
         $expires = config('payment-gateways.cache.session.expires');
 
@@ -62,7 +62,7 @@ class PaystackProvider extends AbstractProvider
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null
     {
-        $payment = $this->verifyProvider($paymentReference);
+        $payment = $this->verifyReference($paymentReference);
 
         return new PaymentDataObject(
             email: $payment['customer']['email'],
@@ -78,7 +78,7 @@ class PaystackProvider extends AbstractProvider
 
     public function initializeProvider(array $params): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $params);
+        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments");
 
         throw_if($response->failed(), new PaymentInitializationException());
 
@@ -87,7 +87,7 @@ class PaystackProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transaction/verify/$reference");
+        $response = $this->http()->acceptJson()->post("$this->baseUrl/transactions/$reference/verify");
 
         throw_if($response->failed(), new PaymentVerificationException());
 

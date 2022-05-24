@@ -8,6 +8,9 @@ use Stephenjude\PaymentGateway\Providers\PaystackProvider;
 
 /**
  * @method PaystackProvider paystack()
+ * @method PaystackProvider flutterwave()
+ * @method PaystackProvider monnify()
+ * @method PaystackProvider stripe()
  */
 class PaymentGateway
 {

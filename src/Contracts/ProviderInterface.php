@@ -2,6 +2,7 @@
 
 namespace Stephenjude\PaymentGateway\Contracts;
 
+use Illuminate\Http\Client\PendingRequest;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 
