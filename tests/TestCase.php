@@ -13,7 +13,9 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Stephenjude\\PaymentGateway\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn(string $modelName) => 'Stephenjude\\PaymentGateway\\Database\\Factories\\'.class_basename(
+                    $modelName
+                ).'Factory'
         );
     }
 
@@ -27,6 +29,18 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         config()->set('database.default', 'testing');
+
+        config()->set('payment-gateways.providers.paystack.public', 'testing');
+        config()->set('payment-gateways.providers.paystack.secret', 'testing');
+
+        config()->set('payment-gateways.providers.flutterwave.public', 'testing');
+        config()->set('payment-gateways.providers.flutterwave.secret', 'testing');
+
+        config()->set('payment-gateways.providers.paypal.public', 'testing');
+        config()->set('payment-gateways.providers.paypal.secret', 'testing');
+
+        config()->set('payment-gateways.providers.stripe.public', 'testing');
+        config()->set('payment-gateways.providers.stripe.secret', 'testing');
 
         /*
         $migration = include __DIR__.'/../database/migrations/create_laravel-payment-gateways_table.php.stub';

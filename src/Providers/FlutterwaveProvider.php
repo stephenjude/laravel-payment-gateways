@@ -10,23 +10,10 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
 use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
-use Stephenjude\PaymentGateway\Gateways\FlutterwaveGateway;
 
 class FlutterwaveProvider extends AbstractProvider
 {
     public string $provider = 'flutterwave';
-
-    public function setChannels(array $channels): self
-    {
-        $this->channels = $channels;
-
-        return $this;
-    }
-
-    public function getChannels(): array|null
-    {
-        return $this->channels ?? config('payment-gateways.providers.flutterwave.channels');
-    }
 
     public function initializeSession(
         string $currency,
@@ -43,7 +30,7 @@ class FlutterwaveProvider extends AbstractProvider
         return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
             email: $email,
             meta: $meta,
-            amount: $amount * 100,
+            amount: $amount,
             currency: $currency,
             channels: $this->getChannels(),
             provider: $this->provider,
@@ -62,17 +49,17 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null
     {
-        $payment = $this->verifyReference($paymentReference);
+        $payment = $this->verifyProvider($paymentReference);
 
         return new PaymentDataObject(
             email: $payment['customer']['email'],
-            meta: $payment['metadata'] ?? null,
-            amount: ($payment['amount'] / 100),
+            meta: $payment['meta'] ?? null,
+            amount: $payment['amount'],
             currency: $payment['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $payment['status'] === 'success',
-            date: Carbon::parse($payment['transaction_date'])->toDateTimeString(),
+            successful: $payment['status'] === 'successful',
+            date: Carbon::parse($payment['created_at'])->toDateTimeString(),
         );
     }
 
@@ -87,7 +74,7 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transactions/$reference/verify");
+        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/$reference/verify");
 
         throw_if($response->failed(), new PaymentVerificationException());
 

@@ -27,6 +27,18 @@ abstract class AbstractProvider implements ProviderInterface
         $this->publicKey = config("payment-gateways.providers.$this->provider.public");
     }
 
+    public function setChannels(array $channels): self
+    {
+        $this->channels = $channels;
+
+        return $this;
+    }
+
+    public function getChannels(): array|null
+    {
+        return $this->channels ?? config("payment-gateways.providers.$this->provider.channels");
+    }
+
     public function getInitializedSession(string $sessionReference): SessionDataObject|null
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;

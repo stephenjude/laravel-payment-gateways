@@ -2,6 +2,7 @@
 
 namespace Stephenjude\PaymentGateway\Http\Controllers;
 
+use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -18,7 +19,7 @@ class PaymentGatewayController extends Controller
 
     public function index(Request $request, string $provider, string $reference)
     {
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
         }
 
@@ -35,23 +36,24 @@ class PaymentGatewayController extends Controller
 
     public function store(Request $request, string $provider, string $reference)
     {
-        /**
-         * Session $reference becomes the payment reference if the provider doesn't
-         * supply any reference for the transactions.
-         */
-        $paymentReference = $provider === config('payment-gateways.providers.flutterwave')
-            ? $request->input('id') ?? $request->input('transaction_id')
-            : $reference;
+        try {
+            /**
+             * Session Reference becomes the Payment Reference if the provider doesn't
+             * return any reference for the transactions via the callback url.
+             */
+            $paymentReference = $request->get('id') ?? $request->get('transaction_id') ?? $reference;
 
+            $paymentProvider = PaymentGateway::make($provider);
 
-        $paymentProvider = PaymentGateway::make($provider);
+            $paymentProvider->setReference($reference, $paymentReference);
 
-        $paymentProvider->deinitializeSession($reference);
+            $payment = $paymentProvider->verifyReference($paymentReference);
 
-        $paymentProvider->setReference($reference, $paymentReference);
+            $paymentProvider->deinitializeSession($reference);
 
-        $payment = $paymentProvider->verifyReference($paymentReference);
-
-        return view('payment-gateways::status', ['successful' => $payment->successful,]);
+            return view('payment-gateways::status', ['successful' => $payment->successful,]);
+        } catch (Exception $exception) {
+            abort(Response::HTTP_FORBIDDEN, "Payment transaction error: ".$exception->getMessage());
+        }
     }
 }

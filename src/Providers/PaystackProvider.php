@@ -16,18 +16,6 @@ class PaystackProvider extends AbstractProvider
 {
     public string $provider = 'paystack';
 
-    public function setChannels(array $channels): self
-    {
-        $this->channels = $channels;
-
-        return $this;
-    }
-
-    public function getChannels(): array|null
-    {
-        return $this->channels ?? config('payment-gateways.providers.paystack.channels');
-    }
-
     public function initializeSession(
         string $currency,
         float|int $amount,
