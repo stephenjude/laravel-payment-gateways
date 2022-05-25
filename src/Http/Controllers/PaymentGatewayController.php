@@ -19,7 +19,7 @@ class PaymentGatewayController extends Controller
 
     public function index(Request $request, string $provider, string $reference)
     {
-        if (!$request->hasValidSignature()) {
+        if (! $request->hasValidSignature()) {
             abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
         }
 
