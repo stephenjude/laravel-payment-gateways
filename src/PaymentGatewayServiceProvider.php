@@ -16,4 +16,3 @@ class PaymentGatewayServiceProvider extends PackageServiceProvider
             ->hasRoute('web');
     }
 }
-
