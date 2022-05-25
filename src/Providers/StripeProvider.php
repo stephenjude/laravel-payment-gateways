@@ -3,15 +3,12 @@
 namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
-use Stephenjude\PaymentGateway\Gateways\StripeGateway;
 
 class StripeProvider extends AbstractProvider
 {
@@ -40,7 +37,7 @@ class StripeProvider extends AbstractProvider
 
         $routeParameters = ['reference' => $reference, 'provider' => $this->provider,];
 
-        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             email: $email,
             amount: $amount,
             currency: $currency,

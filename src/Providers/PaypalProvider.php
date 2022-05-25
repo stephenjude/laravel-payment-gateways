@@ -12,7 +12,6 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
-use Stephenjude\PaymentGateway\Gateways\PaypalGateway;
 
 class PaypalProvider extends AbstractProvider
 {
@@ -38,7 +37,7 @@ class PaypalProvider extends AbstractProvider
 
         $routeParameters = ['reference' => $reference, 'provider' => $this->provider,];
 
-        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             email: $email,
             amount: $amount,
             currency: $currency,
