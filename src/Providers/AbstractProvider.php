@@ -27,7 +27,7 @@ abstract class AbstractProvider implements ProviderInterface
         $this->publicKey = config("payment-gateways.providers.$this->provider.public");
     }
 
-    public function setChannels(array $channels): self
+    public function setChannels(array|null $channels): self
     {
         $this->channels = $channels;
 
