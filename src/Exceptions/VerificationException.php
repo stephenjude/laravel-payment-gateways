@@ -2,9 +2,7 @@
 
 namespace Stephenjude\PaymentGateway\Exceptions;
 
-use Exception;
-
-class PaymentVerificationException extends Exception
+class VerificationException extends HttpException
 {
     protected $message = "payment verification failed";
 }

@@ -41,7 +41,7 @@ class PaymentGatewayController extends Controller
              * Session Reference becomes the Payment Reference if the provider doesn't
              * return any reference for the transactions via the callback url.
              */
-            $paymentReference = $request->get('id') ?? $request->get('transaction_id') ?? $reference;
+            $paymentReference = $request->get('transaction_id') ?? $reference;
 
             $paymentProvider = PaymentGateway::make($provider);
 

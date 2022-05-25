@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
-use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
-use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
+use Stephenjude\PaymentGateway\Exceptions\InitializationException;
+use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 use Stephenjude\PaymentGateway\Gateways\StripeGateway;
 
 class StripeProvider extends AbstractProvider
@@ -75,7 +75,7 @@ class StripeProvider extends AbstractProvider
     {
         $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents", $params);
 
-        throw_if($response->failed(), new PaymentInitializationException());
+        throw_if($response->failed(), new InitializationException());
 
         return $response->json();
     }
@@ -84,7 +84,7 @@ class StripeProvider extends AbstractProvider
     {
         $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents/$reference");
 
-        throw_if($response->failed(), new PaymentVerificationException());
+        throw_if($response->failed(), new VerificationException());
 
         return $response->json();
     }

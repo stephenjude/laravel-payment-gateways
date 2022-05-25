@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
-use Stephenjude\PaymentGateway\Exceptions\PaymentInitializationException;
-use Stephenjude\PaymentGateway\Exceptions\PaymentVerificationException;
+use Stephenjude\PaymentGateway\Exceptions\InitializationException;
+use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class FlutterwaveProvider extends AbstractProvider
 {
@@ -29,12 +29,12 @@ class FlutterwaveProvider extends AbstractProvider
 
         return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             email: $email,
-            meta: $meta,
             amount: $amount,
             currency: $currency,
-            channels: $this->getChannels(),
             provider: $this->provider,
             reference: $reference,
+            channels: $this->getChannels(),
+            meta: $meta,
             checkoutSecret: null,
             checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), [
                 'reference' => $reference,
@@ -68,7 +68,7 @@ class FlutterwaveProvider extends AbstractProvider
     {
         $response = $this->http()->acceptJson()->post("$this->baseUrl/payments");
 
-        throw_if($response->failed(), new PaymentInitializationException());
+        throw_if($response->failed(), new InitializationException());
 
         return $response->json('data');
     }
@@ -77,7 +77,7 @@ class FlutterwaveProvider extends AbstractProvider
     {
         $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/$reference/verify");
 
-        throw_if($response->failed(), new PaymentVerificationException());
+        throw_if($response->failed(), new VerificationException());
 
         return $response->json('data');
     }

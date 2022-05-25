@@ -4,8 +4,8 @@
 
 @push('styles')
     <script
-        src="https://www.paypal.com/sdk/js?client-id={{ $data['public_key'] }}&components=buttons,marks"
-        data-client-token="{{$data['reference']}}"></script>
+        src="https://www.paypal.com/sdk/js?client-id={{ config('payment-gateways.providers.paypal.public') }}&components=buttons,marks"
+        data-client-token="{{$data->reference}}"></script>
 @endpush
 
 @section('content')
@@ -31,14 +31,15 @@
                         return actions.order.create({
                             purchase_units: [{
                                 amount: {
-                                    value: paymentData.amount
+                                    value: paymentData.amount,
+                                    currency_code: paymentData.currency
                                 }
                             }]
                         });
                     },
                     onApprove: function (data, actions) {
                         return actions.order.capture().then(function (details) {
-                            window.location.href = paymentData.callback_url + "&id=" + details.id;
+                            window.location.href = paymentData.callbackUrl + "?transaction_id=" + details.id;
                         });
                     }
                 })
