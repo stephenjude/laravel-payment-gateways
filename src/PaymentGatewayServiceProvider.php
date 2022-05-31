@@ -11,7 +11,7 @@ class PaymentGatewayServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('laravel-payment-gateways')
-            ->hasConfigFile()
+            ->hasConfigFile('payment-gateways')
             ->hasViews()
             ->hasRoute('web');
     }

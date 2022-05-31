@@ -9,7 +9,7 @@ return [
     'support_email' => 'support@company.email',
 
     /*
-     * Debug mode logs all the HTTP response to your application log file
+     * Debug mode set to true logs all the HTTP response to your application log file
      */
     'debug_mode' => true,
 
