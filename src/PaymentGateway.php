@@ -11,6 +11,7 @@ use Stephenjude\PaymentGateway\Providers\PaystackProvider;
  * @method PaystackProvider flutterwave()
  * @method PaystackProvider monnify()
  * @method PaystackProvider stripe()
+ * @method PaystackProvider paypal()
  */
 class PaymentGateway
 {
