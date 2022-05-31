@@ -54,6 +54,7 @@ $provider = PaymentGateway::make('paystack');
 $session = $provider->initializeSession($currency, $amount, $email, $meta);
 
 $session->checkoutUrl // Returns checkout link.
+
 $session->reference // Returns session reference.
 ```
 ### Verify Completed Payment
