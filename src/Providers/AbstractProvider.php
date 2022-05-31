@@ -19,7 +19,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public string $provider;
 
-    public array $channels;
+    public array|null $channels;
 
     public function __construct()
     {
