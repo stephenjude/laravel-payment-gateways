@@ -1,6 +1,6 @@
 <div id="loader" class="w-full grid grid-cols-1 h-screen">
     <div class="flex items-end justify-center">
-        <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 rounded-full text-green-600"
+        <div class="spinner-border animate-spin inline-block w-12 h-12 border-4 rounded-full text-gray-600"
              role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
