@@ -9,6 +9,11 @@ return [
     'support_email' => 'support@company.email',
 
     /*
+     * Debug mode logs all the HTTP response to your application log file
+     */
+    'debug_mode' => true,
+
+    /*
      * All payment transactions are carried out on the checkout route and are verified on the callback route.
      */
     'routes' => [

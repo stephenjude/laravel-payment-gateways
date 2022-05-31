@@ -27,7 +27,7 @@ class PaystackProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
             email: $email,
             amount: $amount * 100,
             currency: $currency,
@@ -68,6 +68,8 @@ class PaystackProvider extends AbstractProvider
     {
         $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $params);
 
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+
         throw_if($response->failed(), new InitializationException());
 
         return $response->json('data');
@@ -76,6 +78,8 @@ class PaystackProvider extends AbstractProvider
     public function verifyProvider(string $reference): mixed
     {
         $response = $this->http()->acceptJson()->get("$this->baseUrl/transaction/verify/$reference");
+
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         throw_if($response->failed(), new VerificationException());
 

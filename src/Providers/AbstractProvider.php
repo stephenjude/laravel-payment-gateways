@@ -3,6 +3,7 @@
 namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
@@ -59,7 +60,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $expires = config('payment-gateway.cache.payment.expries');
 
-        Cache::remember($key, $expires, fn () => $paymentReference);
+        Cache::remember($key, $expires, fn() => $paymentReference);
     }
 
     public function getReference(string $sessionReference): string|null
@@ -77,4 +78,20 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function initializeProvider(array $params): mixed;
 
     abstract public function verifyProvider(string $paymentReference): mixed;
+
+    protected function logResponseIfEnabledDebugMode(string $provider, Response $response): void
+    {
+        if (config('payment-gateways.debug_mode')) {
+            return;
+        }
+
+        logger("$provider Response: ", [
+            'STATUS' => $response->status(),
+            'REASON' => $response->reason(),
+            'BODY' => $response->body(),
+            'JSON' => $response->json(),
+            'ERROR' => $response->reason(),
+            'PSR' => $response->toPsrResponse(),
+        ]);
+    }
 }

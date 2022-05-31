@@ -94,6 +94,8 @@ class PaypalProvider extends AbstractProvider
     {
         $response = $this->http()->post("$this->baseUrl/identity/generate-token");
 
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+
         throw_if($response->failed(), new InitializationException());
 
         return $response->json();
@@ -102,6 +104,8 @@ class PaypalProvider extends AbstractProvider
     public function verifyProvider(string $paymentReference): mixed
     {
         $response = $this->http()->get("$this->baseUrl/checkout/orders/$paymentReference");
+
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         throw_if($response->failed(), new VerificationException());
 

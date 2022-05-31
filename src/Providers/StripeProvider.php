@@ -72,6 +72,8 @@ class StripeProvider extends AbstractProvider
     {
         $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents", $params);
 
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+
         throw_if($response->failed(), new InitializationException());
 
         return $response->json();
@@ -80,6 +82,8 @@ class StripeProvider extends AbstractProvider
     public function verifyProvider(string $reference): mixed
     {
         $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents/$reference");
+
+        $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         throw_if($response->failed(), new VerificationException());
 
