@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 00.7 - 2022-05-31
+
+- Updated GitHub Actions
+- Updated Readme
+
 ## 0.0.6 - 2022-05-31
 
 - Fix config file publishing error
