@@ -60,7 +60,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $expires = config('payment-gateway.cache.payment.expries');
 
-        Cache::remember($key, $expires, fn() => $paymentReference);
+        Cache::remember($key, $expires, fn () => $paymentReference);
     }
 
     public function getReference(string $sessionReference): string|null
