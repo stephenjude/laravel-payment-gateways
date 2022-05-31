@@ -29,15 +29,12 @@ php artisan vendor:publish --tag="payment-gateways-views"
 
 ## Usage
 
-## 
+### Initialize Payment Session
 ```php
 use Stephenjude\PaymentGateway\PaymentGateway;
 
 $provider = PaymentGateway::make('paystack');
-```
 
-### Initialize Payment Session
-```php
 $session = $provider->initializeSession($currency, $amount, $email, $meta);
 
 $session->checkoutUrl // Returns checkout link.
@@ -46,7 +43,9 @@ $session->reference // Returns session reference.
 ```
 ### Verify Completed Payment
 ```php
-$payment = $provider->verifyReference($reference)
+$paymentReference = $provider->getReference($session->reference);
+
+$payment = $provider->verifyReference($paymentReference)
 
 $payment->successful 
 
