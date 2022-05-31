@@ -76,6 +76,8 @@ class PaypalProvider extends AbstractProvider
                 ->withBasicAuth($this->publicKey, $this->secretKey)
                 ->post("$this->baseUrl/oauth2/token", ['grant_type' => 'client_credentials',]);
 
+            $this->logResponseIfEnabledDebugMode($this->provider, $response);
+
             throw_if($response->failed(), new Exception($response->reason()));
 
             return $response->json('access_token');
