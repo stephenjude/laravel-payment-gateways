@@ -33,11 +33,11 @@ return [
     'cache' => [
         'session' => [
             'key' => '_gateway_session_reference_',
-            'expires' => 3600
+            'expires' => 42300, // 12 hours
         ],
         'payment' => [
             'key' => '_gateway_payment_reference_',
-            'expires' => 3600
+            'expires' => 42300, // 12 hours
         ],
     ],
 
