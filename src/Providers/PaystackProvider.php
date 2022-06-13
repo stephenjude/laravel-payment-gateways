@@ -27,45 +27,37 @@ class PaystackProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, function () use (
-            $email,
-            $amount,
-            $currency,
-            $reference,
-            $meta,
-            $expires
-        ) {
-            $amount *= 100;
+        return Cache::remember(
+            $sessionCacheKey,
+            $expires,
+            function () use ($email, $amount, $currency, $reference, $meta, $expires) {
+                $amount *= 100;
 
-            $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
-                'reference' => $reference,
-                'provider' => $this->provider,
-            ]);
+                $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
+                    'reference' => $reference,
+                    'provider' => $this->provider,
+                ]);
 
-            $paystack = $this->initializeProvider([
-                'email' => $email,
-                'amount' => $amount,
-                'currency' => $currency,
-                'reference' => $reference,
-                'channels' => $this->getChannels(),
-                'metadata' => $meta,
-                'callback_url' => $callbackUrl,
-            ]);
+                $paystack = $this->initializeProvider([
+                    'email' => $email,
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'reference' => $reference,
+                    'channels' => $this->getChannels(),
+                    'metadata' => $meta,
+                    'callback_url' => $callbackUrl,
+                ]);
 
-            return new SessionDataObject(
-                email: $email,
-                amount: $amount,
-                currency: $currency,
-                provider: $this->provider,
-                reference: $reference,
-                channels: $this->getChannels(),
-                meta: $meta,
-                checkoutSecret: null,
-                checkoutUrl: $paystack['authorization_url'],
-                callbackUrl: $callbackUrl,
-                expires: $expires
-            );
-        });
+                return new SessionDataObject(
+                    provider: $this->provider,
+                    reference: $reference,
+                    checkoutSecret: $paystack['access_code'],
+                    checkoutUrl: $paystack['authorization_url'],
+                    callbackUrl: $callbackUrl,
+                    expires: $expires
+                );
+            }
+        );
     }
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null

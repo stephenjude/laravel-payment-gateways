@@ -27,25 +27,38 @@ class FlutterwaveProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
-            email: $email,
-            amount: $amount,
-            currency: $currency,
-            provider: $this->provider,
-            reference: $reference,
-            channels: $this->getChannels(),
-            meta: $meta,
-            checkoutSecret: null,
-            checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), [
-                'reference' => $reference,
-                'provider' => $this->provider,
-            ], $expires),
-            callbackUrl: route(config('payment-gateways.routes.callback.name'), [
-                'reference' => $reference,
-                'provider' => $this->provider,
-            ]),
-            expires: $expires
-        ));
+        return Cache::remember(
+            $sessionCacheKey,
+            $expires,
+            function () use ($email, $amount, $currency, $reference, $meta, $expires) {
+                $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
+                    'reference' => $reference,
+                    'provider' => $this->provider,
+                ]);
+
+                $flutterwave = $this->initializeProvider([
+                    'amount' => $amount,
+                    'currency' => $currency,
+                    'tx_ref' => $reference,
+                    'redirect_url' => $callbackUrl,
+                    'payment_options' => implode(", ", $this->getChannels()),
+                    'customer' => ['email' => $email,],
+                    'meta' => $meta,
+                ]);
+
+                return new SessionDataObject(
+                    provider: $this->provider,
+                    reference: $reference,
+                    checkoutSecret: null,
+                    checkoutUrl: $flutterwave['link'],
+                    callbackUrl: route(config('payment-gateways.routes.callback.name'), [
+                        'reference' => $reference,
+                        'provider' => $this->provider,
+                    ]),
+                    expires: $expires
+                );
+            }
+        );
     }
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null
@@ -66,7 +79,7 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function initializeProvider(array $params): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments");
+        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments", $params);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
