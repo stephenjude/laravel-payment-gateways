@@ -27,25 +27,45 @@ class PaystackProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
-            email: $email,
-            amount: $amount * 100,
-            currency: $currency,
-            provider: $this->provider,
-            reference: $reference,
-            channels: $this->getChannels(),
-            meta: $meta,
-            checkoutSecret: null,
-            checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), [
+        return Cache::remember($sessionCacheKey, $expires, function () use (
+            $email,
+            $amount,
+            $currency,
+            $reference,
+            $meta,
+            $expires
+        ) {
+            $amount *= 100;
+
+            $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
                 'reference' => $reference,
                 'provider' => $this->provider,
-            ], $expires),
-            callbackUrl: route(config('payment-gateways.routes.callback.name'), [
+            ]);
+
+            $paystack = $this->initializeProvider([
+                'email' => $email,
+                'amount' => $amount,
+                'currency' => $currency,
                 'reference' => $reference,
-                'provider' => $this->provider,
-            ]),
-            expires: $expires
-        ));
+                'channels' => $this->getChannels(),
+                'metadata' => $meta,
+                'callback_url' => $callbackUrl,
+            ]);
+
+            return new SessionDataObject(
+                email: $email,
+                amount: $amount,
+                currency: $currency,
+                provider: $this->provider,
+                reference: $reference,
+                channels: $this->getChannels(),
+                meta: $meta,
+                checkoutSecret: null,
+                checkoutUrl: $paystack['authorization_url'],
+                callbackUrl: $callbackUrl,
+                expires: $expires
+            );
+        });
     }
 
     public function verifyReference(string $paymentReference): PaymentDataObject|null

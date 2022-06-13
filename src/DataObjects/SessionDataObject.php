@@ -14,7 +14,7 @@ class SessionDataObject extends Data
         public string $reference,
         public array|null $channels,
         public array|null $meta,
-        public string|null $checkoutSecret,
+        public string|null $checkoutSecret = null,
         public string $checkoutUrl,
         public string $callbackUrl,
         public int $expires,
