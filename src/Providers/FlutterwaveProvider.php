@@ -46,15 +46,11 @@ class FlutterwaveProvider extends AbstractProvider
                     'meta' => $meta,
                 ]);
 
+
                 return new SessionDataObject(
                     provider: $this->provider,
-                    reference: $reference,
-                    checkoutSecret: null,
+                    sessionReference: $reference,
                     checkoutUrl: $flutterwave['link'],
-                    callbackUrl: route(config('payment-gateways.routes.callback.name'), [
-                        'reference' => $reference,
-                        'provider' => $this->provider,
-                    ]),
                     expires: $expires
                 );
             }
@@ -84,6 +80,8 @@ class FlutterwaveProvider extends AbstractProvider
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         throw_if($response->failed(), new InitializationException());
+
+        throw_if(is_null($response->json('data')), new InitializationException());
 
         return $response->json('data');
     }

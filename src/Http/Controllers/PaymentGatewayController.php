@@ -19,7 +19,7 @@ class PaymentGatewayController extends Controller
 
     public function index(Request $request, string $provider, string $reference)
     {
-        if (! $request->hasValidSignature()) {
+        if (!$request->hasValidSignature()) {
             abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
         }
 
@@ -37,13 +37,19 @@ class PaymentGatewayController extends Controller
     public function store(Request $request, string $provider, string $reference)
     {
         try {
-            /**
-             * Session Reference becomes the Payment Reference if the provider doesn't
-             * return any reference for the transactions via the callback url.
-             */
-            $paymentReference = $request->get('transaction_id') ?? $reference;
-
             $paymentProvider = PaymentGateway::make($provider);
+
+            $sessionData = $paymentProvider->getInitializedSession($reference);
+
+            /**
+             * Session Reference becomes the Payment Reference if the payment session data does
+             * not contain the reference for the paymentor if the provider doesn't return
+             * any reference for the transactions via the callback url.
+             */
+
+            $paymentReference = $request->get('transaction_id')
+                ?? $sessionData?->paymentReference
+                ?? $sessionData->sessionReference;
 
             $paymentProvider->setReference($reference, $paymentReference);
 

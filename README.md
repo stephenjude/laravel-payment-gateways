@@ -30,6 +30,7 @@ php artisan vendor:publish --tag="payment-gateways-views"
 ## Usage
 
 ### Initialize Payment Session
+
 ```php
 use Stephenjude\PaymentGateway\PaymentGateway;
 
@@ -39,7 +40,7 @@ $session = $provider->initializeSession($currency, $amount, $email, $meta);
 
 $session->checkoutUrl // Returns checkout link.
 
-$session->reference // Returns session reference.
+$session->sessionReference // Returns session reference.
 ```
 ### Verify Completed Payment
 ```php

@@ -21,7 +21,7 @@ class PaystackProvider extends AbstractProvider
         string $email,
         array $meta = []
     ): SessionDataObject {
-        $reference = 'PTK_'.Str::random(10);
+        $reference = 'PTK_'.Str::random(12);
 
         $expires = config('payment-gateways.cache.session.expires');
 
@@ -50,10 +50,8 @@ class PaystackProvider extends AbstractProvider
 
                 return new SessionDataObject(
                     provider: $this->provider,
-                    reference: $reference,
-                    checkoutSecret: $paystack['access_code'],
+                    sessionReference: $reference,
                     checkoutUrl: $paystack['authorization_url'],
-                    callbackUrl: $callbackUrl,
                     expires: $expires
                 );
             }

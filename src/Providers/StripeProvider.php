@@ -5,6 +5,7 @@ namespace Stephenjude\PaymentGateway\Providers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -22,32 +23,43 @@ class StripeProvider extends AbstractProvider
     ): SessionDataObject {
         $amount *= 100;
 
-        $intent = $this->initializeProvider([
-            'amount' => $amount,
-            'currency' => $currency,
-            'payment_method_types' => $this->getChannels(),
-            'metadata' => $meta,
-        ]);
-
-        $reference = $intent['id'];
+        $sessionReference = 'STP_'.Str::random(12);
 
         $expires = config('payment-gateways.cache.session.expires');
 
-        $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
+        $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
+            'reference' => $sessionReference,
+            'provider' => $this->provider,
+        ]);
 
-        $routeParameters = ['reference' => $reference, 'provider' => $this->provider,];
+        $stripe = $this->initializeProvider([
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'unit_amount' => $amount,
+                        'currency' => strtolower($currency),
+                        'product_data' => [
+                            'name' => $sessionReference
+                        ],
+                    ],
+                    'quantity' => 1
+                ]
+            ],
+            'customer_email' => $email,
+            'payment_method_types' => $this->getChannels(),
+            'metadata' => $meta,
+            'mode' => 'payment',
+            'success_url' => $callbackUrl,
+            'cancel_url' => $callbackUrl,
+        ]);
 
-        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
-            email: $email,
-            amount: $amount,
-            currency: $currency,
+        $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
+
+        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
             provider: $this->provider,
-            reference: $reference,
-            channels: $this->getChannels(),
-            meta: $meta,
-            checkoutSecret: $intent['client_secret'],
-            checkoutUrl: URL::signedRoute(config('payment-gateways.routes.checkout.name'), $routeParameters, $expires),
-            callbackUrl: route(config('payment-gateways.routes.callback.name'), $routeParameters),
+            sessionReference: $sessionCacheKey,
+            paymentReference: $stripe['payment_intent'],
+            checkoutUrl: $stripe['url'],
             expires: $expires
         ));
     }
@@ -70,7 +82,7 @@ class StripeProvider extends AbstractProvider
 
     public function initializeProvider(array $params): mixed
     {
-        $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents", $params);
+        $response = $this->http()->asForm()->post("$this->baseUrl/checkout/sessions", $params);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

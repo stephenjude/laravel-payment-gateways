@@ -42,7 +42,7 @@ class PaypalProvider extends AbstractProvider
             amount: $amount,
             currency: $currency,
             provider: $this->provider,
-            reference: $reference,
+            sessionReference: $reference,
             channels: $this->getChannels(),
             meta: $meta,
             checkoutSecret: $intent['client_token'],
