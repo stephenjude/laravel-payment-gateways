@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.1.3 - 2022-06-02
+
+- Increase default timeout to 12 hours
+
 ## 0.1.2 - 2022-05-31
 
 - Fix missing debug response
