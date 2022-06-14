@@ -4,7 +4,6 @@ namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
@@ -39,11 +38,11 @@ class StripeProvider extends AbstractProvider
                         'unit_amount' => $amount,
                         'currency' => strtolower($currency),
                         'product_data' => [
-                            'name' => $sessionReference
+                            'name' => $sessionReference,
                         ],
                     ],
-                    'quantity' => 1
-                ]
+                    'quantity' => 1,
+                ],
             ],
             'customer_email' => $email,
             'payment_method_types' => $this->getChannels(),
@@ -55,7 +54,7 @@ class StripeProvider extends AbstractProvider
 
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 
-        return Cache::remember($sessionCacheKey, $expires, fn() => new SessionDataObject(
+        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
             provider: $this->provider,
             sessionReference: $sessionCacheKey,
             paymentReference: $stripe['payment_intent'],

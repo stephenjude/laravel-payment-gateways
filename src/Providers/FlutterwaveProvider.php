@@ -4,7 +4,6 @@ namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
