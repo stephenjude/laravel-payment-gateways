@@ -2,6 +2,20 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.0.4 - 2022-06-14
+
+I would have tagged this significant release with lots of breaking changes, but thanks to God, we still don't have a stable release.
+
+In this release, I reworked the hosted providers to generate the checkout URL from the gateway providers.
+
+Completed the implementation for the following providers:
+
+- Paystack 🔥
+- Flutterwave 🔥
+- Stripe 🔥
+
+That's all for now, more implementation is coming for Monnify and Paypal 🚀
+
 ## 0.1.3 - 2022-06-02
 
 - Increase default timeout to 12 hours
