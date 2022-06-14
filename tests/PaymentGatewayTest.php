@@ -18,6 +18,6 @@ it('can make stripe provider', function () {
     expect(PaymentGateway::make('stripe'))->toBeInstanceOf(StripeProvider::class);
 });
 
-it('can make paypal provider', function () {
-    expect(PaymentGateway::make('paypal'))->toBeInstanceOf(PaypalProvider::class);
-});
+//it('can make paypal provider', function () {
+//    expect(PaymentGateway::make('paypal'))->toBeInstanceOf(PaypalProvider::class);
+//});
