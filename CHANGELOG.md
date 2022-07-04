@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.1.5 - 2022-07-04
+
+- Bump dependabot/fetch-metadata from 1.3.1 to 1.3.3
+
 ## 0.0.4 - 2022-06-14
 
 I would have tagged this significant release with lots of breaking changes, but thanks to God, we still don't have a stable release.
