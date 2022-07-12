@@ -2,14 +2,11 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
-use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Omnipay\Omnipay;
-use Omnipay\Paystack\Gateway;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;

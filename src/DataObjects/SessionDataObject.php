@@ -2,7 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\DataObjects;
 
-use Closure;
 use Laravel\SerializableClosure\SerializableClosure;
 use Spatie\LaravelData\Data;
 

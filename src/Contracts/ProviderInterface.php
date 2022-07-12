@@ -2,7 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\Contracts;
 
-use Closure;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
