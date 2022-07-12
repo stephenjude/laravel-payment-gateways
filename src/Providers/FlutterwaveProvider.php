@@ -2,9 +2,11 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -14,53 +16,49 @@ class FlutterwaveProvider extends AbstractProvider
 {
     public string $provider = 'flutterwave';
 
-    public function initializePayment(
-        string $currency,
-        float|int $amount,
-        string $email,
-        array $meta = []
-    ): SessionDataObject {
-        $reference = 'FLW_'.Str::random(10);
+    public function initializePayment(array $parameters = []): SessionDataObject
+    {
+        $parameters['reference'] = 'FLW_'.Str::random(12);
 
-        $expires = config('payment-gateways.cache.session.expires');
+        $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
-        $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
+        $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember(
-            $sessionCacheKey,
-            $expires,
-            function () use ($email, $amount, $currency, $reference, $meta, $expires) {
-                $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
-                    'reference' => $reference,
-                    'provider' => $this->provider,
-                ]);
-
-                $flutterwave = $this->initializeProvider([
-                    'amount' => $amount,
-                    'currency' => $currency,
-                    'tx_ref' => $reference,
-                    'redirect_url' => $callbackUrl,
-                    'payment_options' => implode(", ", $this->getChannels()),
-                    'customer' => ['email' => $email,],
-                    'meta' => $meta,
-                ]);
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
+            $flutterwave = $this->initializeProvider([
+                'amount' => Arr::get($parameters, 'amount'),
+                'currency' => Arr::get($parameters, 'currency'),
+                'tx_ref' => Arr::get($parameters, 'reference'),
+                'payment_options' => implode(", ", $this->getChannels()),
+                'customer' => ['email' => Arr::get($parameters, 'email')],
+                'meta' => Arr::get($parameters, 'meta'),
+                'redirect_url' => Arr::get(
+                    $parameters,
+                    'callback_url',
+                    route(config('payment-gateways.routes.callback.name'), [
+                        'reference' => $parameters['reference'],
+                        'provider' => $this->provider,
+                    ])
+                ),
+            ]);
 
 
-                return new SessionDataObject(
-                    provider: $this->provider,
-                    sessionReference: $reference,
-                    checkoutUrl: $flutterwave['link'],
-                    expires: $expires
-                );
-            }
+            return new SessionDataObject(
+                provider: $this->provider,
+                sessionReference: $parameters['reference'],
+                checkoutUrl: $flutterwave['link'],
+                expires: $parameters['expires'],
+                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            );
+        }
         );
     }
 
-    public function confirmPayment(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 
-        return new PaymentDataObject(
+        $payment = new PaymentDataObject(
             email: $payment['customer']['email'],
             meta: $payment['meta'] ?? null,
             amount: $payment['amount'],
@@ -70,6 +68,12 @@ class FlutterwaveProvider extends AbstractProvider
             successful: $payment['status'] === 'successful',
             date: Carbon::parse($payment['created_at'])->toDateTimeString(),
         );
+
+        if ($closure) {
+            $closure($payment);
+        }
+
+        return $payment;
     }
 
     public function initializeProvider(array $params): mixed

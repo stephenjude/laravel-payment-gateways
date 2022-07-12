@@ -27,32 +27,29 @@ class PaystackProvider extends AbstractProvider
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember(
-            $parameters['session_cache_key'],
-            $parameters['expires'],
-            function () use ($parameters) {
-                $paystack = $this->initializeProvider([
-                    'email' => Arr::get($parameters, 'email'),
-                    'amount' => Arr::get($parameters, 'amount', 0) * 100,
-                    'currency' => Arr::get($parameters, 'currency'),
-                    'reference' => Arr::get($parameters, 'reference'),
-                    'channels' => $this->getChannels(),
-                    'metadata' => Arr::get($parameters, 'meta'),
-                    'callback_url' => $parameters['callback_url']
-                        ?? route(config('payment-gateways.routes.callback.name'), [
-                            'reference' => $parameters['reference'],
-                            'provider' => $this->provider,
-                        ]),
-                ]);
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
+            $paystack = $this->initializeProvider([
+                'email' => Arr::get($parameters, 'email'),
+                'amount' => Arr::get($parameters, 'amount', 0) * 100,
+                'currency' => Arr::get($parameters, 'currency'),
+                'reference' => Arr::get($parameters, 'reference'),
+                'channels' => $this->getChannels(),
+                'metadata' => Arr::get($parameters, 'meta'),
+                'callback_url' => $parameters['callback_url']
+                    ?? route(config('payment-gateways.routes.callback.name'), [
+                        'reference' => $parameters['reference'],
+                        'provider' => $this->provider,
+                    ]),
+            ]);
 
-                return new SessionDataObject(
-                    provider: $this->provider,
-                    sessionReference: $parameters['reference'],
-                    checkoutUrl: $paystack['authorization_url'],
-                    expires: $parameters['expires'],
-                    closure: new SerializableClosure($parameters['closure']),
-                );
-            }
+            return new SessionDataObject(
+                provider: $this->provider,
+                sessionReference: $parameters['reference'],
+                checkoutUrl: $paystack['authorization_url'],
+                expires: $parameters['expires'],
+                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            );
+        }
         );
     }
 
