@@ -40,14 +40,14 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->channels ?? config("payment-gateways.providers.$this->provider.channels");
     }
 
-    public function getInitializedSession(string $sessionReference): SessionDataObject|null
+    public function getInitializedPayment(string $sessionReference): SessionDataObject|null
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 
         return Cache::get($sessionCacheKey);
     }
 
-    public function deinitializeSession(string $sessionReference): void
+    public function deinitializePayment(string $sessionReference): void
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 

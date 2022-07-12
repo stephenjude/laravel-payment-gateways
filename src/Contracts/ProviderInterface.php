@@ -2,21 +2,18 @@
 
 namespace Stephenjude\PaymentGateway\Contracts;
 
+use Closure;
+use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 
 interface ProviderInterface
 {
-    public function initializeSession(
-        string $currency,
-        int|float $amount,
-        string $email,
-        array $meta = []
-    ): SessionDataObject;
+    public function initializePayment(array $parameters = []): SessionDataObject;
 
-    public function getInitializedSession(string $sessionReference): SessionDataObject|null;
+    public function getInitializedPayment(string $sessionReference): SessionDataObject|null;
 
-    public function deinitializeSession(string $sessionReference): void;
+    public function deinitializePayment(string $sessionReference): void;
 
     public function setChannels(array $channels): self;
 
@@ -26,5 +23,8 @@ interface ProviderInterface
 
     public function getReference(string $sessionReference): string|null;
 
-    public function verifyReference(string $paymentReference): PaymentDataObject|null;
+    public function confirmPayment(
+        string $paymentReference,
+        SerializableClosure|null $closure,
+    ): PaymentDataObject|null;
 }

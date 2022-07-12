@@ -2,6 +2,8 @@
 
 namespace Stephenjude\PaymentGateway\DataObjects;
 
+use Closure;
+use Laravel\SerializableClosure\SerializableClosure;
 use Spatie\LaravelData\Data;
 
 class SessionDataObject extends Data
@@ -13,6 +15,7 @@ class SessionDataObject extends Data
         public string|null $checkoutSecret = null,
         public string $checkoutUrl,
         public int $expires,
+        public ?SerializableClosure $closure,
     ) {
     }
 }

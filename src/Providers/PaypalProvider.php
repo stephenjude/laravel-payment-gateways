@@ -17,7 +17,7 @@ class PaypalProvider extends AbstractProvider
 {
     public string $provider = 'paypal';
 
-    public function initializeSession(
+    public function initializePayment(
         string $currency,
         float|int $amount,
         string $email,
@@ -52,7 +52,7 @@ class PaypalProvider extends AbstractProvider
         ));
     }
 
-    public function verifyReference(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 

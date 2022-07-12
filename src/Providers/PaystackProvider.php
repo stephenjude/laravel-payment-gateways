@@ -2,9 +2,14 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
+use Closure;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Laravel\SerializableClosure\SerializableClosure;
+use Omnipay\Omnipay;
+use Omnipay\Paystack\Gateway;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -14,54 +19,48 @@ class PaystackProvider extends AbstractProvider
 {
     public string $provider = 'paystack';
 
-    public function initializeSession(
-        string $currency,
-        float|int $amount,
-        string $email,
-        array $meta = []
-    ): SessionDataObject {
-        $reference = 'PTK_'.Str::random(12);
+    public function initializePayment(array $parameters = []): SessionDataObject
+    {
+        $parameters['reference'] = 'PTK_'.Str::random(12);
 
-        $expires = config('payment-gateways.cache.session.expires');
+        $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
-        $sessionCacheKey = config('payment-gateways.cache.session.key').$reference;
+        $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
         return Cache::remember(
-            $sessionCacheKey,
-            $expires,
-            function () use ($email, $amount, $currency, $reference, $meta, $expires) {
-                $amount *= 100;
-
-                $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
-                    'reference' => $reference,
-                    'provider' => $this->provider,
-                ]);
-
+            $parameters['session_cache_key'],
+            $parameters['expires'],
+            function () use ($parameters) {
                 $paystack = $this->initializeProvider([
-                    'email' => $email,
-                    'amount' => $amount,
-                    'currency' => $currency,
-                    'reference' => $reference,
+                    'email' => Arr::get($parameters, 'email'),
+                    'amount' => Arr::get($parameters, 'amount', 0) * 100,
+                    'currency' => Arr::get($parameters, 'currency'),
+                    'reference' => Arr::get($parameters, 'reference'),
                     'channels' => $this->getChannels(),
-                    'metadata' => $meta,
-                    'callback_url' => $callbackUrl,
+                    'metadata' => Arr::get($parameters, 'meta'),
+                    'callback_url' => $parameters['callback_url']
+                        ?? route(config('payment-gateways.routes.callback.name'), [
+                            'reference' => $parameters['reference'],
+                            'provider' => $this->provider,
+                        ]),
                 ]);
 
                 return new SessionDataObject(
                     provider: $this->provider,
-                    sessionReference: $reference,
+                    sessionReference: $parameters['reference'],
                     checkoutUrl: $paystack['authorization_url'],
-                    expires: $expires
+                    expires: $parameters['expires'],
+                    closure: new SerializableClosure($parameters['closure']),
                 );
             }
         );
     }
 
-    public function verifyReference(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 
-        return new PaymentDataObject(
+        $payment = new PaymentDataObject(
             email: $payment['customer']['email'],
             meta: $payment['metadata'],
             amount: ($payment['amount'] / 100),
@@ -71,6 +70,12 @@ class PaystackProvider extends AbstractProvider
             successful: $payment['status'] === 'success',
             date: Carbon::parse($payment['transaction_date'])->toDateTimeString(),
         );
+
+        if ($closure) {
+            $closure($payment);
+        }
+
+        return $payment;
     }
 
     public function initializeProvider(array $params): mixed

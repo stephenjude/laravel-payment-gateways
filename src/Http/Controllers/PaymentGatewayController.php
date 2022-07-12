@@ -23,7 +23,7 @@ class PaymentGatewayController extends Controller
             abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
         }
 
-        $paymentSession = PaymentGateway::make($provider)?->getInitializedSession($reference);
+        $paymentSession = PaymentGateway::make($provider)?->getInitializedPayment($reference);
 
         if (is_null($paymentSession)) {
             abort(Response::HTTP_FORBIDDEN, 'Invalid payment session!');
@@ -39,27 +39,28 @@ class PaymentGatewayController extends Controller
         try {
             $paymentProvider = PaymentGateway::make($provider);
 
-            $sessionData = $paymentProvider->getInitializedSession($reference);
+            $sessionData = $paymentProvider->getInitializedPayment($reference);
 
             /**
              * Session Reference becomes the Payment Reference if the payment session data does
-             * not contain the reference for the paymentor if the provider doesn't return
+             * not contain the reference for the payment OR if the provider doesn't return
              * any reference for the transactions via the callback url.
              */
-
             $paymentReference = $request->get('transaction_id')
                 ?? $sessionData?->paymentReference
                 ?? $sessionData->sessionReference;
 
             $paymentProvider->setReference($reference, $paymentReference);
 
-            $payment = $paymentProvider->verifyReference($paymentReference);
+            $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
 
-            $paymentProvider->deinitializeSession($reference);
+            $paymentProvider->deinitializePayment($reference);
 
             return view('payment-gateways::status', ['successful' => $payment->successful,]);
         } catch (Exception $exception) {
-            abort(Response::HTTP_FORBIDDEN, "Payment transaction error: ".$exception->getMessage());
+            logger($exception->getMessage(), $exception->getTrace());
+
+            abort(Response::HTTP_BAD_REQUEST, "Payment transaction error: ".$exception->getMessage());
         }
     }
 }

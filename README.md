@@ -36,7 +36,7 @@ use Stephenjude\PaymentGateway\PaymentGateway;
 
 $provider = PaymentGateway::make('paystack');
 
-$session = $provider->initializeSession($currency, $amount, $email, $meta);
+$session = $provider->initializePayment($currency, $amount, $email, $meta);
 
 $session->checkoutUrl // Returns checkout link.
 

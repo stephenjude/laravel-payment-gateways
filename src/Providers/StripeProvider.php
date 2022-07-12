@@ -14,7 +14,7 @@ class StripeProvider extends AbstractProvider
 {
     public string $provider = 'stripe';
 
-    public function initializeSession(
+    public function initializePayment(
         string $currency,
         float|int $amount,
         string $email,
@@ -63,7 +63,7 @@ class StripeProvider extends AbstractProvider
         ));
     }
 
-    public function verifyReference(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 

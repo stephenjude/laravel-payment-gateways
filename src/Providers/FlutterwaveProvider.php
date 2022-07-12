@@ -14,7 +14,7 @@ class FlutterwaveProvider extends AbstractProvider
 {
     public string $provider = 'flutterwave';
 
-    public function initializeSession(
+    public function initializePayment(
         string $currency,
         float|int $amount,
         string $email,
@@ -56,7 +56,7 @@ class FlutterwaveProvider extends AbstractProvider
         );
     }
 
-    public function verifyReference(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 
