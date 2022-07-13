@@ -5,6 +5,7 @@ namespace Stephenjude\PaymentGateway\Providers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
 use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -14,56 +15,34 @@ class StripeProvider extends AbstractProvider
 {
     public string $provider = 'stripe';
 
-    public function initializePayment(
-        string $currency,
-        float|int $amount,
-        string $email,
-        array $meta = []
-    ): SessionDataObject {
-        $amount *= 100;
+    public function initializePayment(array $parameters = []): SessionDataObject
+    {
+        $parameters['amount'] *= 100;
 
-        $sessionReference = 'STP_'.Str::random(12);
+        $parameters['reference'] = 'STP_'.Str::random(12);
 
-        $expires = config('payment-gateways.cache.session.expires');
+        $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
-        $callbackUrl = route(config('payment-gateways.routes.callback.name'), [
-            'reference' => $sessionReference,
+        $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
+
+        $parameters['callback_url'] ??= route(config('payment-gateways.routes.callback.name'), [
+            'reference' => $parameters['reference'],
             'provider' => $this->provider,
         ]);
 
-        $stripe = $this->initializeProvider([
-            'line_items' => [
-                [
-                    'price_data' => [
-                        'unit_amount' => $amount,
-                        'currency' => strtolower($currency),
-                        'product_data' => [
-                            'name' => $sessionReference,
-                        ],
-                    ],
-                    'quantity' => 1,
-                ],
-            ],
-            'customer_email' => $email,
-            'payment_method_types' => $this->getChannels(),
-            'metadata' => $meta,
-            'mode' => 'payment',
-            'success_url' => $callbackUrl,
-            'cancel_url' => $callbackUrl,
-        ]);
+        $stripe = $this->initializeProvider($parameters);
 
-        $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
-
-        return Cache::remember($sessionCacheKey, $expires, fn () => new SessionDataObject(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionDataObject(
             provider: $this->provider,
-            sessionReference: $sessionCacheKey,
+            sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['payment_intent'],
             checkoutUrl: $stripe['url'],
-            expires: $expires
+            expires: $parameters['expires'],
+            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 
-    public function confirmPayment(string $paymentReference): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
     {
         $payment = $this->verifyProvider($paymentReference);
 
@@ -81,7 +60,10 @@ class StripeProvider extends AbstractProvider
 
     public function initializeProvider(array $params): mixed
     {
-        $response = $this->http()->asForm()->post("$this->baseUrl/checkout/sessions", $params);
+        $response = $this->http()->asForm()->post(
+            "$this->baseUrl/checkout/sessions",
+            $this->getProviderInitializationRequestParams($params)
+        );
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
@@ -99,5 +81,29 @@ class StripeProvider extends AbstractProvider
         throw_if($response->failed(), new VerificationException());
 
         return $response->json();
+    }
+
+    private function getProviderInitializationRequestParams(array $parameters): array
+    {
+        return [
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'unit_amount' => Arr::get($parameters, 'amount'),
+                        'currency' => strtolower(Arr::get($parameters, 'currency')),
+                        'product_data' => [
+                            'name' => $parameters['reference'],
+                        ],
+                    ],
+                    'quantity' => 1,
+                ],
+            ],
+            'customer_email' => Arr::get($parameters, 'email'),
+            'payment_method_types' => $this->getChannels(),
+            'metadata' => Arr::get($parameters, 'meta'),
+            'mode' => 'payment',
+            'success_url' => $parameters['callback_url'],
+            'cancel_url' => $parameters['callback_url'],
+        ];
     }
 }
