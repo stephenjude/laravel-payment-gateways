@@ -17,29 +17,14 @@ class PaymentGatewayController extends Controller
     use DispatchesJobs;
     use ValidatesRequests;
 
-    public function index(Request $request, string $provider, string $reference)
-    {
-        if (! $request->hasValidSignature()) {
-            abort(Response::HTTP_FORBIDDEN, 'Expired/Invalid payment!');
-        }
-
-        $paymentSession = PaymentGateway::make($provider)?->getInitializedPayment($reference);
-
-        if (is_null($paymentSession)) {
-            abort(Response::HTTP_FORBIDDEN, 'Invalid payment session!');
-        }
-
-        return view("payment-gateways::checkout.$provider", [
-            'data' => $paymentSession,
-        ]);
-    }
-
-    public function store(Request $request, string $provider, string $reference)
+    public function __invoke(Request $request, string $provider, string $reference)
     {
         try {
             $paymentProvider = PaymentGateway::make($provider);
 
             $sessionData = $paymentProvider->getInitializedPayment($reference);
+
+            abort_if(is_null($sessionData), Response::HTTP_BAD_REQUEST, 'Payment session has expired');
 
             /**
              * Session Reference becomes the Payment Reference if the payment session data does
@@ -48,19 +33,15 @@ class PaymentGatewayController extends Controller
              */
             $paymentReference = $request->get('transaction_id')
                 ?? $sessionData?->paymentReference
-                ?? $sessionData->sessionReference;
-
-            $paymentProvider->setReference($reference, $paymentReference);
+                ?? $sessionData?->sessionReference;
 
             $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
-
-            $paymentProvider->deinitializePayment($reference);
 
             return view('payment-gateways::status', ['successful' => $payment->successful,]);
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 
-            abort(Response::HTTP_BAD_REQUEST, "Payment transaction error: ".$exception->getMessage());
+            abort(Response::HTTP_BAD_REQUEST, "Payment Error: ".$exception->getMessage());
         }
     }
 }

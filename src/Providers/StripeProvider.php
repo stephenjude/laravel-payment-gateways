@@ -44,18 +44,24 @@ class StripeProvider extends AbstractProvider
 
     public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
     {
-        $payment = $this->verifyProvider($paymentReference);
+        $provider = $this->verifyProvider($paymentReference);
 
-        return new PaymentDataObject(
-            email: Arr::get($payment['charges'], 'data.0.billing_details.email'),
-            meta: $payment['metadata'],
-            amount: ($payment['amount'] / 100),
-            currency: $payment['currency'],
+        $payment = new PaymentDataObject(
+            email: Arr::get($provider['charges'], 'data.0.billing_details.email'),
+            meta: $provider['metadata'],
+            amount: ($provider['amount'] / 100),
+            currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $payment['status'] === 'succeeded',
+            successful: $provider['status'] === 'succeeded',
             date: null,
         );
+
+        if ($closure) {
+            $closure($payment);
+        }
+
+        return $payment;
     }
 
     public function initializeProvider(array $params): mixed

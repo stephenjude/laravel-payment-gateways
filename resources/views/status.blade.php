@@ -24,11 +24,13 @@
                 </h3>
 
                 @if($successful)
-                    <p class="text-gray-600 my-2">Your payment transaction was successful. Please close the tab to
-                        continue.</p>
+                    <p class="text-gray-600 my-2">
+                        {{config('payment-gateways.message.success')}}
+                    </p>
                 @else
-                    <p class="text-gray-600 my-2">Your payment transaction was unsuccessful. Please close the tab to
-                        continue.</p>
+                    <p class="text-gray-600 my-2">
+                        {{config('payment-gateways.message.failed')}}
+                    </p>
                 @endif
                 @if(config('payment-gateways.support_email'))
                     <hr>

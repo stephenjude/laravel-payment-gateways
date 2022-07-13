@@ -19,10 +19,6 @@ interface ProviderInterface
 
     public function getChannels(): array|null;
 
-    public function setReference(string $sessionReference, string $paymentReference): void;
-
-    public function getReference(string $sessionReference): string|null;
-
     public function confirmPayment(
         string $paymentReference,
         SerializableClosure|null $closure,

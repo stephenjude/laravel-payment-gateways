@@ -9,18 +9,22 @@ return [
     'support_email' => 'support@company.email',
 
     /*
+     * Display messages for successful or failed payments.
+     */
+    'message' => [
+        'success' => 'Your payment transaction was successful. Please close the tab to continue.',
+        'failed' => 'Your payment transaction was not successful. Please close the tab to continue.',
+    ],
+
+    /*
      * Debug mode set to true logs all the HTTP response to your application log file
      */
     'debug_mode' => true,
 
     /*
-     * All payment transactions are carried out on the checkout route and are verified on the callback route.
+     * All payment transactions are verified on the callback route.
      */
     'routes' => [
-        'checkout' => [
-            'path' => 'payment/gateways/{provider}/checkout/{reference}',
-            'name' => 'payment.gateway.checkout',
-        ],
         'callback' => [
             'path' => 'payment/gateways/{provider}/callback/{reference}',
             'name' => 'payment.gateway.callback',

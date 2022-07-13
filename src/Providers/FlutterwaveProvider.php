@@ -56,17 +56,17 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
     {
-        $payment = $this->verifyProvider($paymentReference);
+        $provider = $this->verifyProvider($paymentReference);
 
         $payment = new PaymentDataObject(
-            email: $payment['customer']['email'],
-            meta: $payment['meta'] ?? null,
-            amount: $payment['amount'],
-            currency: $payment['currency'],
+            email: $provider['customer']['email'],
+            meta: $provider['meta'] ?? null,
+            amount: $provider['amount'],
+            currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $payment['status'] === 'successful',
-            date: Carbon::parse($payment['created_at'])->toDateTimeString(),
+            successful: $provider['status'] === 'successful',
+            date: Carbon::parse($provider['created_at'])->toDateTimeString(),
         );
 
         if ($closure) {

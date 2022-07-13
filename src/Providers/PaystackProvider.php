@@ -49,23 +49,22 @@ class PaystackProvider extends AbstractProvider
                 expires: $parameters['expires'],
                 closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
             );
-        }
-        );
+        });
     }
 
     public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentDataObject|null
     {
-        $payment = $this->verifyProvider($paymentReference);
+        $provider = $this->verifyProvider($paymentReference);
 
         $payment = new PaymentDataObject(
-            email: $payment['customer']['email'],
-            meta: $payment['metadata'],
-            amount: ($payment['amount'] / 100),
-            currency: $payment['currency'],
+            email: $provider['customer']['email'],
+            meta: $provider['metadata'],
+            amount: ($provider['amount'] / 100),
+            currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $payment['status'] === 'success',
-            date: Carbon::parse($payment['transaction_date'])->toDateTimeString(),
+            successful: $provider['status'] === 'success',
+            date: Carbon::parse($provider['transaction_date'])->toDateTimeString(),
         );
 
         if ($closure) {
