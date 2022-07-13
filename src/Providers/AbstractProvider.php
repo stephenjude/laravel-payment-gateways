@@ -88,7 +88,6 @@ abstract class AbstractProvider implements ProviderInterface
         logger("$provider Response: ", [
             'STATUS' => $response->status(),
             'REASON' => $response->reason(),
-            'BODY' => $response->body(),
             'JSON' => $response->json(),
             'ERROR' => $response->reason(),
             'PSR' => $response->toPsrResponse(),

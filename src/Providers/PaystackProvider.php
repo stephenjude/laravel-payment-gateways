@@ -63,7 +63,7 @@ class PaystackProvider extends AbstractProvider
             currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $provider['status'] === 'success',
+            status: $provider['status'],
             date: Carbon::parse($provider['transaction_date'])->toDateTimeString(),
         );
 

@@ -37,7 +37,10 @@ class PaymentGatewayController extends Controller
 
             $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
 
-            return view('payment-gateways::status', ['successful' => $payment->successful,]);
+            return view('payment-gateways::status', [
+                'payment' => $payment,
+                'successful' => $payment->isSuccessful(),
+            ]);
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 

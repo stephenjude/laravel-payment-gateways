@@ -65,7 +65,7 @@ class FlutterwaveProvider extends AbstractProvider
             currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $provider['status'] === 'successful',
+            status: $provider['status'],
             date: Carbon::parse($provider['created_at'])->toDateTimeString(),
         );
 

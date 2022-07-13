@@ -46,6 +46,8 @@ class StripeProvider extends AbstractProvider
     {
         $provider = $this->verifyProvider($paymentReference);
 
+//        dd($provider);
+
         $payment = new PaymentDataObject(
             email: Arr::get($provider['charges'], 'data.0.billing_details.email'),
             meta: $provider['metadata'],
@@ -53,7 +55,7 @@ class StripeProvider extends AbstractProvider
             currency: $provider['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            successful: $provider['status'] === 'succeeded',
+            status: $provider['status'],
             date: null,
         );
 

@@ -13,8 +13,35 @@ class PaymentDataObject extends Data
         public string $currency,
         public string $reference,
         public string $provider,
-        public bool $successful,
+        public string $status,
         public string|null $date,
     ) {
+    }
+
+    public function isSuccessful(): bool
+    {
+        // Paystack: success; Flutterwave: successful; Stripe: succeeded;
+        return match ($this->status) {
+            'success', 'succeeded', 'successful' => true,
+            default => false
+        };
+    }
+
+    public function isProcessing(): bool
+    {
+        // Stripe: processing;
+        return match ($this->status) {
+            'processing' => true,
+            default => false
+        };
+    }
+
+    public function failed(): bool
+    {
+        // Paystack: failed; Flutterwave: failed; Stripe: failed;
+        return match ($this->status) {
+            'failed' => true,
+            default => false
+        };
     }
 }
