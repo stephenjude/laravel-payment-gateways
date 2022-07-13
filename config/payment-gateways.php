@@ -14,7 +14,7 @@ return [
     'message' => [
         'success' => 'Your payment transaction was successful. Please close the tab to continue.',
         'failed' => 'Your payment transaction was not successful. Please close the tab to continue.',
-        'pending' => 'Your payment transaction is being processed by our payment partners. Please stay on this page and refresh in 5 minutes.',
+        'pending' => 'Your payment transaction is being processed by our payment partner. Please stay on this page and refresh in 5 minutes.',
     ],
 
     /*
