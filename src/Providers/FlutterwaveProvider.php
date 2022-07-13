@@ -24,7 +24,10 @@ class FlutterwaveProvider extends AbstractProvider
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
+        return Cache::remember(
+            $parameters['session_cache_key'],
+            $parameters['expires'],
+            function () use ($parameters) {
             $flutterwave = $this->initializeProvider([
                 'amount' => Arr::get($parameters, 'amount'),
                 'currency' => Arr::get($parameters, 'currency'),
