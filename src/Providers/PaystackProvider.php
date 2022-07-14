@@ -26,8 +26,7 @@ class PaystackProvider extends AbstractProvider
 
         return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
             /*
-             * Round up or down to the nearest integer because Paystack does not support decimal values.
-             * Convert
+             * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
              */
             $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
 
