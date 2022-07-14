@@ -2,7 +2,6 @@
 
 use Stephenjude\PaymentGateway\PaymentGateway;
 use Stephenjude\PaymentGateway\Providers\FlutterwaveProvider;
-use Stephenjude\PaymentGateway\Providers\PaypalProvider;
 use Stephenjude\PaymentGateway\Providers\PaystackProvider;
 use Stephenjude\PaymentGateway\Providers\StripeProvider;
 
