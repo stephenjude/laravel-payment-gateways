@@ -69,11 +69,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": {
-        "local": {
-            "type": "path",
-            "url": "../omnipay-paystack"
-        }
-    }
+    "prefer-stable": true
 }
