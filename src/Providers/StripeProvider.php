@@ -59,7 +59,7 @@ class StripeProvider extends AbstractProvider
             date: null,
         );
 
-        if ($closure) {
+        if ($closure && $payment) {
             $closure($payment);
         }
 

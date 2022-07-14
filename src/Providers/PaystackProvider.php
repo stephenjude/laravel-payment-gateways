@@ -69,7 +69,7 @@ class PaystackProvider extends AbstractProvider
             date: Carbon::parse($provider['transaction_date'])->toDateTimeString(),
         );
 
-        if ($closure) {
+        if ($closure && $payment) {
             $closure($payment);
         }
 

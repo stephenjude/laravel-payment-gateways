@@ -29,21 +29,21 @@ class FlutterwaveProvider extends AbstractProvider
             $parameters['expires'],
             function () use ($parameters) {
                 $flutterwave = $this->initializeProvider([
-                'amount' => Arr::get($parameters, 'amount'),
-                'currency' => Arr::get($parameters, 'currency'),
-                'tx_ref' => Arr::get($parameters, 'reference'),
-                'payment_options' => implode(", ", $this->getChannels()),
-                'customer' => ['email' => Arr::get($parameters, 'email')],
-                'meta' => Arr::get($parameters, 'meta'),
-                'redirect_url' => Arr::get(
-                    $parameters,
-                    'callback_url',
-                    route(config('payment-gateways.routes.callback.name'), [
-                        'reference' => $parameters['reference'],
-                        'provider' => $this->provider,
-                    ])
-                ),
-            ]);
+                    'amount' => Arr::get($parameters, 'amount'),
+                    'currency' => Arr::get($parameters, 'currency'),
+                    'tx_ref' => Arr::get($parameters, 'reference'),
+                    'payment_options' => implode(", ", $this->getChannels()),
+                    'customer' => ['email' => Arr::get($parameters, 'email')],
+                    'meta' => Arr::get($parameters, 'meta'),
+                    'redirect_url' => Arr::get(
+                        $parameters,
+                        'callback_url',
+                        route(config('payment-gateways.routes.callback.name'), [
+                            'reference' => $parameters['reference'],
+                            'provider' => $this->provider,
+                        ])
+                    ),
+                ]);
 
 
                 return new SessionDataObject(
@@ -72,7 +72,7 @@ class FlutterwaveProvider extends AbstractProvider
             date: Carbon::parse($provider['created_at'])->toDateTimeString(),
         );
 
-        if ($closure) {
+        if ($closure && $payment) {
             $closure($payment);
         }
 
