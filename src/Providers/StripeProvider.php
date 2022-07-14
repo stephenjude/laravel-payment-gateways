@@ -32,7 +32,7 @@ class StripeProvider extends AbstractProvider
 
         $stripe = $this->initializeProvider($parameters);
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionDataObject(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionDataObject(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['payment_intent'],
