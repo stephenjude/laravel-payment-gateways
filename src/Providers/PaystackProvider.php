@@ -29,7 +29,7 @@ class PaystackProvider extends AbstractProvider
              * Round up or down to the nearest integer because Paystack does not support decimal values.
              * Convert
              */
-            $amount = Arr::get($parameters, 'amount') * 100; //round(num: Arr::get($parameters, 'amount'), mode: PHP_ROUND_HALF_ODD) * 100;
+            $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
 
             $paystack = $this->initializeProvider([
                 'email' => Arr::get($parameters, 'email'),
