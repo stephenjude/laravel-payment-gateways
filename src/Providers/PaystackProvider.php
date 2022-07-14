@@ -25,9 +25,15 @@ class PaystackProvider extends AbstractProvider
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
         return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
+            /*
+             * Round up or down to the nearest integer because Paystack does not support decimal values.
+             * Convert
+             */
+            $amount = Arr::get($parameters, 'amount') * 100; //round(num: Arr::get($parameters, 'amount'), mode: PHP_ROUND_HALF_ODD) * 100;
+
             $paystack = $this->initializeProvider([
                 'email' => Arr::get($parameters, 'email'),
-                'amount' => Arr::get($parameters, 'amount', 0) * 100,
+                'amount' => $amount,
                 'currency' => Arr::get($parameters, 'currency'),
                 'reference' => Arr::get($parameters, 'reference'),
                 'channels' => $this->getChannels(),
@@ -73,6 +79,8 @@ class PaystackProvider extends AbstractProvider
 
     public function initializeProvider(array $params): mixed
     {
+        logger('Params: ', $params);
+
         $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $params);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
