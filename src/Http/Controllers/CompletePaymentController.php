@@ -11,7 +11,7 @@ use Illuminate\Routing\Controller;
 use Stephenjude\PaymentGateway\PaymentGateway;
 use Symfony\Component\HttpFoundation\Response;
 
-class PaymentGatewayController extends Controller
+class CompletePaymentController extends Controller
 {
     use AuthorizesRequests;
     use DispatchesJobs;
