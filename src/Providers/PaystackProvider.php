@@ -86,7 +86,7 @@ class PaystackProvider extends AbstractProvider
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         if ($response->failed()) {
-            throw new InitializationException($response->json('message'), $response->json('status'));
+            throw new InitializationException($response->json('message'), $response->status());
         }
 
         return $response->json('data');
