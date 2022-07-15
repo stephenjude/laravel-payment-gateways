@@ -6,8 +6,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
-use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
@@ -15,7 +15,7 @@ class StripeProvider extends AbstractProvider
 {
     public string $provider = 'stripe';
 
-    public function initializePayment(array $parameters = []): SessionDataObject
+    public function initializePayment(array $parameters = []): SessionData
     {
         $parameters['amount'] *= 100;
 
@@ -32,7 +32,7 @@ class StripeProvider extends AbstractProvider
 
         $stripe = $this->initializeProvider($parameters);
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionDataObject(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['payment_intent'],
@@ -42,13 +42,13 @@ class StripeProvider extends AbstractProvider
         ));
     }
 
-    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentData|null
     {
         $provider = $this->verifyProvider($paymentReference);
 
 //        dd($provider);
 
-        $payment = new PaymentDataObject(
+        $payment = new PaymentData(
             email: Arr::get($provider['charges'], 'data.0.billing_details.email'),
             meta: $provider['metadata'],
             amount: ($provider['amount'] / 100),

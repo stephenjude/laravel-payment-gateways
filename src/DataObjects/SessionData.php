@@ -5,7 +5,7 @@ namespace Stephenjude\PaymentGateway\DataObjects;
 use Laravel\SerializableClosure\SerializableClosure;
 use Spatie\LaravelData\Data;
 
-class SessionDataObject extends Data
+class SessionData extends Data
 {
     public function __construct(
         public string $provider,

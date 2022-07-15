@@ -7,8 +7,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
-use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
@@ -16,7 +16,7 @@ class FlutterwaveProvider extends AbstractProvider
 {
     public string $provider = 'flutterwave';
 
-    public function initializePayment(array $parameters = []): SessionDataObject
+    public function initializePayment(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'FLW_'.Str::random(12);
 
@@ -46,7 +46,7 @@ class FlutterwaveProvider extends AbstractProvider
                 ]);
 
 
-                return new SessionDataObject(
+                return new SessionData(
                     provider: $this->provider,
                     sessionReference: $parameters['reference'],
                     checkoutUrl: $flutterwave['link'],
@@ -57,11 +57,11 @@ class FlutterwaveProvider extends AbstractProvider
         );
     }
 
-    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentData|null
     {
         $provider = $this->verifyProvider($paymentReference);
 
-        $payment = new PaymentDataObject(
+        $payment = new PaymentData(
             email: $provider['customer']['email'],
             meta: $provider['meta'] ?? null,
             amount: $provider['amount'],

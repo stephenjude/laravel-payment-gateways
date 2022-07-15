@@ -7,7 +7,7 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
-use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
+use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -40,7 +40,7 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->channels ?? config("payment-gateways.providers.$this->provider.channels");
     }
 
-    public function getInitializedPayment(string $sessionReference): SessionDataObject|null
+    public function getInitializedPayment(string $sessionReference): SessionData|null
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 

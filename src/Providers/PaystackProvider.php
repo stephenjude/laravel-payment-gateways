@@ -7,8 +7,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentDataObject;
-use Stephenjude\PaymentGateway\DataObjects\SessionDataObject;
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
@@ -16,7 +16,7 @@ class PaystackProvider extends AbstractProvider
 {
     public string $provider = 'paystack';
 
-    public function initializePayment(array $parameters = []): SessionDataObject
+    public function initializePayment(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'PTK_'.Str::random(12);
 
@@ -44,7 +44,7 @@ class PaystackProvider extends AbstractProvider
                     ]),
             ]);
 
-            return new SessionDataObject(
+            return new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 checkoutUrl: $paystack['authorization_url'],
@@ -54,11 +54,11 @@ class PaystackProvider extends AbstractProvider
         });
     }
 
-    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentDataObject|null
+    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
     {
         $provider = $this->verifyProvider($paymentReference);
 
-        $payment = new PaymentDataObject(
+        $payment = new PaymentData(
             email: $provider['customer']['email'],
             meta: $provider['metadata'],
             amount: ($provider['amount'] / 100),

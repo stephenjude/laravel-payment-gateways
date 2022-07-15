@@ -4,7 +4,7 @@ namespace Stephenjude\PaymentGateway\DataObjects;
 
 use Spatie\LaravelData\Data;
 
-class PaymentDataObject extends Data
+class PaymentData extends Data
 {
     public function __construct(
         public string $email,
