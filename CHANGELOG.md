@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.1.6 - 2022-08-08
+
+- Add callback option for custom code execution after customer payment.
+- Parse error messages.
+- Add processing status message for delayed confirmation.
+- Code improvements.
+
 ## 0.1.5 - 2022-07-04
 
 - Bump dependabot/fetch-metadata from 1.3.1 to 1.3.3
