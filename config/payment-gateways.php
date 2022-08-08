@@ -29,7 +29,8 @@ return [
         'callback' => [
             'path' => 'payment/gateways/{provider}/callback/{reference}',
             'name' => 'payment.gateway.callback',
-        ]
+        ],
+        'checkout' => 'payment/gateways/{provider}/checkout',
     ],
 
     /**
