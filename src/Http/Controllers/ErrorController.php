@@ -2,14 +2,11 @@
 
 namespace Stephenjude\PaymentGateway\Http\Controllers;
 
-use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Stephenjude\PaymentGateway\PaymentGateway;
-use Symfony\Component\HttpFoundation\Response;
 
 class ErrorController extends Controller
 {

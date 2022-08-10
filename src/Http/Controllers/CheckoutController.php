@@ -9,7 +9,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Stephenjude\PaymentGateway\PaymentGateway;
-use Symfony\Component\HttpFoundation\Response;
 
 class CheckoutController extends Controller
 {
