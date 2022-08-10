@@ -24,7 +24,7 @@ class KlashaProvider extends AbstractProvider
 
         $sessionData = $this->initializeProvider($parameters);
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             ...$sessionData
         ));
     }
