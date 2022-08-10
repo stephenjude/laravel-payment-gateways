@@ -35,13 +35,13 @@ class KlashaProvider extends AbstractProvider
 
         $payment = new PaymentData(
             email: $provider['customer']['email'],
-            meta: $provider['metadata'],
-            amount: ($provider['amount'] / 100),
-            currency: $provider['currency'],
+            meta: $provider['customer'],
+            amount: $provider['sourceAmount'],
+            currency: $provider['sourceCurrency'],
             reference: $paymentReference,
             provider: $this->provider,
             status: $provider['status'],
-            date: Carbon::parse($provider['transaction_date'])->toDateTimeString(),
+            date: Carbon::now()->toDateTimeString(),
         );
 
         if ($closure && $payment) {
@@ -89,6 +89,6 @@ class KlashaProvider extends AbstractProvider
             throw new VerificationException('Payment verification was not successful.', $response->status());
         }
 
-        return $response->json('data');
+        return $response->json();
     }
 }
