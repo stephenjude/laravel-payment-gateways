@@ -14,44 +14,21 @@ use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class KlashaProvider extends AbstractProvider
 {
-    public string $provider = 'paystack';
+    public string $provider = 'klasha';
 
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['reference'] = 'PTK_'.Str::random(12);
+        $parameters['reference'] = 'KSA_'.Str::random(12);
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
-            /*
-             * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
-             */
-            $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
+        $sessionData = $this->initializeProvider($parameters);
 
-            $paystack = $this->initializeProvider([
-                'email' => Arr::get($parameters, 'email'),
-                'amount' => $amount,
-                'currency' => Arr::get($parameters, 'currency'),
-                'reference' => Arr::get($parameters, 'reference'),
-                'channels' => $this->getChannels(),
-                'metadata' => Arr::get($parameters, 'meta'),
-                'callback_url' => $parameters['callback_url']
-                    ?? route(config('payment-gateways.routes.callback.name'), [
-                        'reference' => $parameters['reference'],
-                        'provider' => $this->provider,
-                    ]),
-            ]);
-
-            return new SessionData(
-                provider: $this->provider,
-                sessionReference: $parameters['reference'],
-                checkoutUrl: $paystack['authorization_url'],
-                expires: $parameters['expires'],
-                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
-            );
-        });
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+            ...$sessionData
+        ));
     }
 
     public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
@@ -76,24 +53,37 @@ class KlashaProvider extends AbstractProvider
         return $payment;
     }
 
-    public function initializeProvider(array $params): mixed
+    public function initializeProvider(array $parameters): mixed
     {
-        logger('Params: ', $params);
-
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $params);
-
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        if ($response->failed()) {
-            throw new InitializationException($response->json('message'), $response->status());
-        }
-
-        return $response->json('data');
+        return [
+            'provider' => $this->provider,
+            'sessionReference' => $parameters['reference'],
+            'paymentReference' => $parameters['reference'],
+            'checkoutUrl' => route(config('payment-gateways.routes.checkout.name'), [
+                'reference' => $parameters['reference'],
+                'provider' => $this->provider,
+            ]),
+            'expires' => $parameters['expires'],
+            'closure' => $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            'extra' => [
+                'email' => $parameters['email'],
+                'currency' => $parameters['currency'],
+                'amount' => $parameters['amount'],
+                'channels' => $this->getChannels(),
+                'is_test_mode' => false,
+                'callback_url' => route(config('payment-gateways.routes.callback.name'), [
+                    'reference' => $parameters['reference'],
+                    'provider' => $this->provider,
+                ]),
+            ],
+        ];
     }
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transaction/verify/$reference");
+        $response = $this->http()->acceptJson()->post("$this->baseUrl/nucleus/tnx/merchant/status", [
+            "tnxRef" => $reference,
+        ]);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

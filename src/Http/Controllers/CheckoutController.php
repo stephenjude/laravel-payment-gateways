@@ -26,21 +26,10 @@ class CheckoutController extends Controller
 
             abort_if(is_null($sessionData), Response::HTTP_BAD_REQUEST, 'Payment session has expired');
 
-            /**
-             * Session Reference becomes the Payment Reference if the payment session data does
-             * not contain the reference for the payment OR if the provider doesn't return
-             * any reference for the transactions via the callback url.
-             */
-            $paymentReference = $request->get('transaction_id')
-                ?? $sessionData?->paymentReference
-                ?? $sessionData?->sessionReference;
-
-            $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
-
-            return view('payment-gateways::status', [
-                'payment' => $payment,
-                'successful' => $payment->isSuccessful(),
+            return view("payment-gateways::checkout.$sessionData->provider", [
+                'sessionData' => $sessionData->toArray(),
             ]);
+
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 

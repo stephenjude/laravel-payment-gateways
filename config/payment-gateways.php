@@ -30,7 +30,10 @@ return [
             'path' => 'payment/gateways/{provider}/callback/{reference}',
             'name' => 'payment.gateway.callback',
         ],
-        'checkout' => 'payment/gateways/{provider}/checkout',
+        'checkout' => [
+            'path' => 'payment/gateways/{provider}/checkout/{reference}',
+            'name' => 'payment.gateway.checkout',
+        ],
     ],
 
     /**
@@ -72,12 +75,12 @@ return [
             'public' => env('STRIPE_PUBLIC'),
             'secret' => env('STRIPE_SECRET'),
         ],
-        'paypal' => [
-            'name' => 'paypal',
+        'klasha' => [
+            'name' => 'klasha',
             'channels' => null,
-            'base_url' => env('PAYPAL_API_URL', 'https://api-m.sandbox.paypal.com/v1'),
-            'public' => env('PAYPAL_PUBLIC'), // Payal ID
-            'secret' => env('PAYPAL_SECRET'), // Payal Secret Key
+            'base_url' => env('KLASHA_API_URL', 'https://gate.klasapps.com'),
+            'public' => env('KLASHA_PUBLIC'),
+            'secret' => env('KLASHA_SECRET'),
         ],
     ],
 ];

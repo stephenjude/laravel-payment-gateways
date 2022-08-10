@@ -75,7 +75,7 @@ abstract class AbstractProvider implements ProviderInterface
         return Http::withToken($this->secretKey)->acceptJson();
     }
 
-    abstract public function initializeProvider(array $params): mixed;
+    abstract public function initializeProvider(array $parameters): mixed;
 
     abstract public function verifyProvider(string $paymentReference): mixed;
 

@@ -79,9 +79,9 @@ class FlutterwaveProvider extends AbstractProvider
         return $payment;
     }
 
-    public function initializeProvider(array $params): mixed
+    public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments", $params);
+        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments", $parameters);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

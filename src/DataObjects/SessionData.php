@@ -15,6 +15,7 @@ class SessionData extends Data
         public string $checkoutUrl,
         public int $expires,
         public ?SerializableClosure $closure,
+        public array $extra = [],
     ) {
     }
 }

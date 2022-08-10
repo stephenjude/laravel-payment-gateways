@@ -66,11 +66,11 @@ class StripeProvider extends AbstractProvider
         return $payment;
     }
 
-    public function initializeProvider(array $params): mixed
+    public function initializeProvider(array $parameters): mixed
     {
         $response = $this->http()->asForm()->post(
             "$this->baseUrl/checkout/sessions",
-            $this->getProviderInitializationRequestParams($params)
+            $this->getProviderInitializationRequestParams($parameters)
         );
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
