@@ -13,14 +13,18 @@
             src="https://js.klasha.com/pay.js"></script>
     <script>
         const data = {{ Illuminate\Support\Js::from($sessionData) }};
-a
+
         const publicKey = {{ Illuminate\Support\Js::from(config('payment-gateways.providers.klasha.public')) }};
+
+        function redirect() {
+            window.location.href = data.extra.callback_url;
+        }
 
         const kit = {
             currency: data.extra.currency,
             email: data.extra.email,
             tx_ref: data.paymentReference,
-            callBack: function (data) {
+            callBack: function () {
                 window.location.href = data.extra.callback_url;
             }
         }
@@ -35,6 +39,6 @@ a
             data.extra.currency,
             kit,
             data.extra.is_test_mode,
-        );
+        )
     </script>
 @endpush

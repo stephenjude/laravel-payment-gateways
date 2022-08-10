@@ -2,14 +2,12 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
-use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class KlashaProvider extends AbstractProvider
@@ -88,7 +86,7 @@ class KlashaProvider extends AbstractProvider
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         if ($response->failed()) {
-            throw new VerificationException($response->json('message'), $response->json('status'));
+            throw new VerificationException('Payment verification was not successful.', $response->status());
         }
 
         return $response->json('data');
