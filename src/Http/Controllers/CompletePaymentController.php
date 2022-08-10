@@ -24,7 +24,12 @@ class CompletePaymentController extends Controller
 
             $sessionData = $paymentProvider->getInitializedPayment($reference);
 
-            abort_if(is_null($sessionData), Response::HTTP_BAD_REQUEST, 'Payment session has expired');
+            if (is_null($sessionData)) {
+                return redirect()->route(
+                    config('payment-gateways.routes.error.name'),
+                    ['message' => 'Your payment session has expired.']
+                );
+            }
 
             /**
              * Session Reference becomes the Payment Reference if the payment session data does
@@ -44,7 +49,7 @@ class CompletePaymentController extends Controller
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 
-            abort(Response::HTTP_BAD_REQUEST, "Payment Error: ".$exception->getMessage());
+            return redirect()->route(config('payment-gateways.routes.error.name'));
         }
     }
 }

@@ -11,29 +11,21 @@ use Illuminate\Routing\Controller;
 use Stephenjude\PaymentGateway\PaymentGateway;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckoutController extends Controller
+class ErrorController extends Controller
 {
     use AuthorizesRequests;
     use DispatchesJobs;
     use ValidatesRequests;
 
-    public function __invoke(Request $request, string $provider, string $reference)
+    public function __invoke(Request $request)
     {
-        try {
-            $paymentProvider = PaymentGateway::make($provider);
-
-            $sessionData = $paymentProvider->getInitializedPayment($reference);
-
-            abort_if(is_null($sessionData), Response::HTTP_BAD_REQUEST, 'Payment session has expired');
-
-            return view("payment-gateways::checkout.$sessionData->provider", [
-                'sessionData' => $sessionData->toArray(),
-            ]);
-
-        } catch (Exception $exception) {
-            logger($exception->getMessage(), $exception->getTrace());
-
-            abort(Response::HTTP_BAD_REQUEST, "Payment Error: ".$exception->getMessage());
-        }
+        return view("payment-gateways::error", [
+            'status' => $request->get('status', 400),
+            'title' => $request->get('title', 'We have a little problem.'),
+            'message' => $request->get(
+                'message',
+                'Looks something completely went wrong. The issue could be that your payment was not successfully verified or your payment session has expired.'
+            ),
+        ]);
     }
 }

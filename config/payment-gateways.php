@@ -34,6 +34,10 @@ return [
             'path' => 'payment/gateways/{provider}/checkout/{reference}',
             'name' => 'payment.gateway.checkout',
         ],
+        'error' => [
+            'path' => 'payment-gateway-error',
+            'name' => 'payment.gateway.error',
+        ],
     ],
 
     /**
