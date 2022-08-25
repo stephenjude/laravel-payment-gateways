@@ -49,6 +49,8 @@ class FlutterwaveProvider extends AbstractProvider
                 return new SessionData(
                     provider: $this->provider,
                     sessionReference: $parameters['reference'],
+                    paymentReference: null,
+                    checkoutSecret: null,
                     checkoutUrl: $flutterwave['link'],
                     expires: $parameters['expires'],
                     closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
