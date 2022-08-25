@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.1.7 - 2022-08-11
+
+- Klasha payment gateway integration.
+- Improved the fallback error page.
+
 ## 0.1.6 - 2022-08-08
 
 - Add callback option for custom code execution after customer payment.
