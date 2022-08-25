@@ -10,8 +10,8 @@ class SessionData extends Data
     public function __construct(
         public string $provider,
         public string $sessionReference,
-        public string|null $paymentReference = null,
-        public string|null $checkoutSecret = null,
+        public string|null $paymentReference,
+        public string|null $checkoutSecret,
         public string $checkoutUrl,
         public int $expires,
         public ?SerializableClosure $closure,

@@ -36,6 +36,7 @@ class StripeProvider extends AbstractProvider
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['payment_intent'],
+            checkoutSecret: null,
             checkoutUrl: $stripe['url'],
             expires: $parameters['expires'],
             closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
@@ -45,8 +46,6 @@ class StripeProvider extends AbstractProvider
     public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentData|null
     {
         $provider = $this->verifyProvider($paymentReference);
-
-//        dd($provider);
 
         $payment = new PaymentData(
             email: Arr::get($provider['charges'], 'data.0.billing_details.email'),

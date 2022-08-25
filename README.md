@@ -33,16 +33,30 @@ php artisan vendor:publish --tag="payment-gateways-views"
 
 ```php
 use Stephenjude\PaymentGateway\PaymentGateway;
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 
-$provider = PaymentGateway::make('paystack');
+$provider = PaymentGateway::make('paystack')
+            ->setChannels(['bank_transfer','card'])
+            ->initializePayment([
+                'currency' => $order->tx_currency,
+                'amount' => $order->tx_amount,
+                'email' => $order->user->email,
+                'meta' => $order->user->only('id', 'name', 'phone'),
+                'closure' => function (PaymentData $payment){
+                    logger('Payment Details', [
+                    
+])
+                },
+            ]);
 
-$session = $provider->initializePayment($currency, $amount, $email, $meta);
 
 $session->checkoutUrl // Returns checkout link.
 
 $session->sessionReference // Returns session reference.
 ```
+
 ### Verify Completed Payment
+
 ```php
 $paymentReference = $provider->getReference($session->reference);
 
@@ -54,8 +68,6 @@ $payment->amount
 
 $payment->currency
 ```
-
-
 
 ## Testing
 

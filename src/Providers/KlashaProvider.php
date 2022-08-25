@@ -57,6 +57,7 @@ class KlashaProvider extends AbstractProvider
             'provider' => $this->provider,
             'sessionReference' => $parameters['reference'],
             'paymentReference' => $parameters['reference'],
+            'checkoutSecret' => null,
             'checkoutUrl' => route(config('payment-gateways.routes.checkout.name'), [
                 'reference' => $parameters['reference'],
                 'provider' => $this->provider,
