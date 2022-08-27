@@ -50,9 +50,9 @@ $provider = PaymentGateway::make('paystack')
             ]);
 
 
-$session->checkoutUrl // Returns checkout link.
+$provider->checkoutUrl // Returns checkout link.
 
-$session->sessionReference // Returns session reference.
+$provider->sessionReference // Returns session reference.
 ```
 
 ### Verify Completed Payment
