@@ -8,6 +8,34 @@
 A simple Laravel implementation for all payment providers. This package supports 
 Paystack, Flutterwave, Klasha, and Stripe.
 
+## Use Case
+Have you had to implement limited SDKs for accepting payments on your mobile app. 
+That's the problem this package solved.
+
+With this package you can generate a payment link and 
+return it to your mobile app when they make API calls and when the payment can be completed on the inapp browser.
+
+When the customer completes their payment, this package verifies the payment and executes the code defined in your 
+custom closure. 
+
+The closure should look like this:
+```php
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+
+function (PaymentData $payment){
+    $order->update([
+        'status' => $payment->status, 
+        'amount' => $payment->amount, 
+        'currency' => $payment->currency
+    ]);
+    
+    $customer->notify(new OrderPaymentNotification($order));
+}
+```
+
+If you are using this package on the web this closure is the place where you can return a redirect after updating the customers order or sent notification.
+
+
 ## Installation
 
 You can install the package via composer:
