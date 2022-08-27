@@ -66,8 +66,8 @@ use Stephenjude\PaymentGateway\PaymentGateway;
 use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 
 $provider = PaymentGateway::make('paystack')
-            ->setChannels(['bank_transfer','card'])
-            ->initializePayment([
+
+$paymentSession = $provider->initializePayment([
                 'currency' => 'NGN', // required
                 'amount' => 100, // required
                 'email' => 'customer@email.com', // required
@@ -88,9 +88,9 @@ $provider = PaymentGateway::make('paystack')
                 },
             ]);
 
-$provider->provider;
-$provider->checkoutUrl;
-$provider->expires;
+$paymentSession->provider;
+$paymentSession->checkoutUrl;
+$paymentSession->expires;
 ```
 
 ### Paystack Setup
