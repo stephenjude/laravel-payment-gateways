@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 0.1.8 - 2022-08-25
+
+- Fix named parameter error.
+
 ## 0.1.7 - 2022-08-11
 
 - Klasha payment gateway integration.
