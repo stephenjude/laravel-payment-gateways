@@ -28,8 +28,9 @@ php artisan vendor:publish --tag="payment-gateways-views"
 ```
 
 ## Usage
+This package currently supports `paystack`, `flutterwave`, `klasha` and `stripe`.
 
-### Initialize Payment Session
+### How to initialize a payment session
 
 ```php
 use Stephenjude\PaymentGateway\PaymentGateway;
@@ -38,37 +39,51 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 $provider = PaymentGateway::make('paystack')
             ->setChannels(['bank_transfer','card'])
             ->initializePayment([
-                'currency' => $order->tx_currency,
-                'amount' => $order->tx_amount,
-                'email' => $order->user->email,
-                'meta' => $order->user->only('id', 'name', 'phone'),
+                'currency' => 'NGN',
+                'amount' => 100,
+                'email' => 'customer@email.com',
+                'meta' => [ 'name' => 'Stephen Jude', 'phone' => '081xxxxxxxxx'],
                 'closure' => function (PaymentData $payment){
-                    logger('Payment Details', [
-                    
-])
+                    // Payment verification happens immediately after the customer makes payment. 
+                    // Payment data is injected into this closure.
+                    logger('payment details', [
+                       'currency' => $payment->currency, 
+                       'amount' => $payment->amount, 
+                       'status' => $payment->status,
+                       'reference' => $payment->reference,   
+                       'provider' => $payment->provider,   
+                       'date' => $payment->date,                   
+                    ]);
                 },
             ]);
 
-
-$session->checkoutUrl // Returns checkout link.
-
-$session->sessionReference // Returns session reference.
+$provider->provider // Payment checkout provider
+$provider->checkoutUrl // Payment checkout URL
+$provider->expires // Payment URL timeout
 ```
 
-### Verify Completed Payment
-
-```php
-$paymentReference = $provider->getReference($session->reference);
-
-$payment = $provider->verifyReference($paymentReference)
-
-$payment->successful 
-
-$payment->amount
-
-$payment->currency
+### Paystack Setup
+```
+PAYSTACK_PUBLIC=
+PAYSTACK_SECRET=
+```
+### Flutterwave Setup
+```
+FLUTTERWAVE_PUBLIC=
+FLUTTERWAVE_SECRET=
 ```
 
+### Klasha Setup
+```
+KLASHA_PUBLIC=
+KLASHA_SECRET=
+```
+
+### Stripe Setup
+```
+STRIPE_PUBLIC=
+STRIPE_SECRET=
+```
 ## Testing
 
 ```bash
