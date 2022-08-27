@@ -39,13 +39,15 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 $provider = PaymentGateway::make('paystack')
             ->setChannels(['bank_transfer','card'])
             ->initializePayment([
-                'currency' => 'NGN',
-                'amount' => 100,
-                'email' => 'customer@email.com',
+                'currency' => 'NGN', // required
+                'amount' => 100, // required
+                'email' => 'customer@email.com', // required
                 'meta' => [ 'name' => 'Stephen Jude', 'phone' => '081xxxxxxxxx'],
                 'closure' => function (PaymentData $payment){
-                    // Payment verification happens immediately after the customer makes payment. 
-                    // Payment data is injected into this closure.
+                    /* 
+                     * Payment verification happens immediately after the customer makes payment. 
+                     * The payment data gotten from the verification will be injected into this closure.
+                     */
                     logger('payment details', [
                        'currency' => $payment->currency, 
                        'amount' => $payment->amount, 
@@ -57,9 +59,9 @@ $provider = PaymentGateway::make('paystack')
                 },
             ]);
 
-$provider->provider // Payment checkout provider
-$provider->checkoutUrl // Payment checkout URL
-$provider->expires // Payment URL timeout
+$provider->provider;
+$provider->checkoutUrl;
+$provider->expires;
 ```
 
 ### Paystack Setup
