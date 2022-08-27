@@ -35,7 +35,6 @@ function (PaymentData $payment){
 
 If you are using this package on the web this closure is the place where you can return a redirect after updating the customers order or sent notification.
 
-
 ## Installation
 
 You can install the package via composer:
