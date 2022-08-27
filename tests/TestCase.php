@@ -36,8 +36,8 @@ class TestCase extends Orchestra
         config()->set('payment-gateways.providers.flutterwave.public', 'testing');
         config()->set('payment-gateways.providers.flutterwave.secret', 'testing');
 
-        config()->set('payment-gateways.providers.paypal.public', 'testing');
-        config()->set('payment-gateways.providers.paypal.secret', 'testing');
+        config()->set('payment-gateways.providers.klasha.public', 'testing');
+        config()->set('payment-gateways.providers.klasha.secret', 'testing');
 
         config()->set('payment-gateways.providers.stripe.public', 'testing');
         config()->set('payment-gateways.providers.stripe.secret', 'testing');
