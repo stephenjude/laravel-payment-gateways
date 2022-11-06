@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.4 - 2022-11-06
+
+- Fixed stripe amount conversion error
+
 ## 1.0.3 - 2022-11-06
 
 - Fixed decimal value error
