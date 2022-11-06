@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.1 - 2022-11-06
+
+- Fixed stripe initialization error due to decimal values.
+
 ## 1.0.0 - 2022-08-27
 
 - Ready for production use.
