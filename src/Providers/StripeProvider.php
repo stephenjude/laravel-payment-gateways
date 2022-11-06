@@ -17,7 +17,7 @@ class StripeProvider extends AbstractProvider
 
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['amount'] *= 100;
+        $parameters['amount'] = round($parameters['amount'] * 100);
 
         $parameters['reference'] = 'STP_'.Str::random(12);
 
@@ -92,13 +92,11 @@ class StripeProvider extends AbstractProvider
 
     private function getProviderInitializationRequestParams(array $parameters): array
     {
-        $amount = (number_format(Arr::get($parameters, 'amount'), 2, '.', '') * 100);
-
         return [
             'line_items' => [
                 [
                     'price_data' => [
-                        'unit_amount' => $amount,
+                        'unit_amount' => (Arr::get($parameters, 'amount') * 100),
                         'currency' => strtolower(Arr::get($parameters, 'currency')),
                         'product_data' => [
                             'name' => $parameters['reference'],
