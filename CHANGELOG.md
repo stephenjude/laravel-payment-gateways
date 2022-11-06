@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.0 - 2022-08-27
+
+- Ready for production use.
+- Fixed failing tests.
+- Updated docs.
+
 ## 0.1.8 - 2022-08-25
 
 - Fix named parameter error.
