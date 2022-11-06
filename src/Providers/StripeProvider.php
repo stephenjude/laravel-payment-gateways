@@ -96,7 +96,7 @@ class StripeProvider extends AbstractProvider
             'line_items' => [
                 [
                     'price_data' => [
-                        'unit_amount' => Arr::get($parameters, 'amount'),
+                        'unit_amount' => (Arr::get($parameters, 'amount') * 100),
                         'currency' => strtolower(Arr::get($parameters, 'currency')),
                         'product_data' => [
                             'name' => $parameters['reference'],
