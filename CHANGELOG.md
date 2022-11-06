@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.3 - 2022-11-06
+
+- Fixed decimal value error
+
 ## 1.0.2 - 2022-11-06
 
 - Fixed amount calculation error.
