@@ -17,7 +17,7 @@ class StripeProvider extends AbstractProvider
 
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['amount'] = round($parameters['amount'] * 100);
+        $parameters['amount'] = (int) round(($parameters['amount']  * 100), 0);
 
         $parameters['reference'] = 'STP_'.Str::random(12);
 
