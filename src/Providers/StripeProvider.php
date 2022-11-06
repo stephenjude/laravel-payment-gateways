@@ -32,7 +32,7 @@ class StripeProvider extends AbstractProvider
 
         $stripe = $this->initializeProvider($parameters);
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['payment_intent'],
@@ -92,11 +92,13 @@ class StripeProvider extends AbstractProvider
 
     private function getProviderInitializationRequestParams(array $parameters): array
     {
+        $amount = (number_format(Arr::get($parameters, 'amount'), 2, '.', '') * 100);
+
         return [
             'line_items' => [
                 [
                     'price_data' => [
-                        'unit_amount' => (Arr::get($parameters, 'amount') * 100),
+                        'unit_amount' => $amount,
                         'currency' => strtolower(Arr::get($parameters, 'currency')),
                         'product_data' => [
                             'name' => $parameters['reference'],
