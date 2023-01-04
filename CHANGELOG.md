@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.8 - 2023-01-04
+
+- Clean up
+- Fixed test workflow
+
 ## 1.0.7 - 2023-01-04
 
 - Fixed reflection error for Pay4Me provider.
