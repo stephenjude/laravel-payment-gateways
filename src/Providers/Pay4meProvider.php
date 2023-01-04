@@ -5,7 +5,6 @@ namespace Stephenjude\PaymentGateway\Providers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
