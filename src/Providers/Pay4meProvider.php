@@ -18,7 +18,7 @@ class Pay4MeProvider extends AbstractProvider
 
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['reference'] = 'PTK_'.Str::random(12);
+        $parameters['reference'] = 'P4M'.now()->timestamp;
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
@@ -85,7 +85,7 @@ class Pay4MeProvider extends AbstractProvider
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         if ($response->failed()) {
-            throw new InitializationException($response->json('message'), $response->status());
+            throw new InitializationException($response->json('eror.message'), $response->status());
         }
 
         return $response->json('data');
@@ -98,7 +98,7 @@ class Pay4MeProvider extends AbstractProvider
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
         if ($response->failed()) {
-            throw new VerificationException($response->json('message'), $response->json('status'));
+            throw new VerificationException($response->json('error.message'), $response->json('status'));
         }
 
         return $response->json('data');
