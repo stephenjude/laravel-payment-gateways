@@ -11,7 +11,7 @@ use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
-class Pay4MeProvider extends AbstractProvider
+class Pay4meProvider extends AbstractProvider
 {
     public string $provider = 'pay4me';
 
