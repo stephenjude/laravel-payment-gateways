@@ -92,6 +92,12 @@ $paymentSession->checkoutUrl;
 $paymentSession->expires;
 ```
 
+### Pay4Me Setup
+```
+PAY4ME_PUBLIC=
+PAY4ME_SECRET=
+```
+
 ### Paystack Setup
 ```
 PAYSTACK_PUBLIC=

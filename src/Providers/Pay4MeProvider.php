@@ -14,7 +14,7 @@ use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class Pay4MeProvider extends AbstractProvider
 {
-    public string $provider = 'paystack';
+    public string $provider = 'pay4me';
 
     public function initializePayment(array $parameters = []): SessionData
     {
