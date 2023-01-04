@@ -30,6 +30,9 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
+        config()->set('payment-gateways.providers.pay4me.public', 'testing');
+        config()->set('payment-gateways.providers.pay4me.secret', 'testing');
+
         config()->set('payment-gateways.providers.paystack.public', 'testing');
         config()->set('payment-gateways.providers.paystack.secret', 'testing');
 
