@@ -2,6 +2,7 @@
 
 namespace Stephenjude\PaymentGateway;
 
+use BadMethodCallException;
 use ReflectionClass;
 use Stephenjude\PaymentGateway\Providers\AbstractProvider;
 use Stephenjude\PaymentGateway\Providers\PaystackProvider;
