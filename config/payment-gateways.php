@@ -58,6 +58,13 @@ return [
      * This is a list of all supported payment gateway providers.
      */
     'providers' => [
+        'pay4me' => [
+            'name' => 'pay4me',
+            'channels' => ['bank_transfer'],
+            'base_url' => env('PAY4ME_API_URL', 'https://checkout.pay4me.app'),
+            'public' => env('PAY4ME_PUBLIC'),
+            'secret' => env('PAY4ME_SECRET'),
+        ],
         'paystack' => [
             'name' => 'paystack',
             'channels' => ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
