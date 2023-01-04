@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.7 - 2023-01-04
+
+- Fixed reflection error for Pay4Me provider.
+
 ## 1.0.6 - 2023-01-04
 
 - Fixed reflection error for Pay4Me provider.
