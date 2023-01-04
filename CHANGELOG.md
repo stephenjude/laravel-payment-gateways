@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.5 - 2023-01-04
+
+- Pay4Me Pay integration.
+
 ## 1.0.4 - 2022-11-06
 
 - Fixed stripe amount conversion error
