@@ -18,7 +18,7 @@ class ErrorController extends Controller
     {
         return view("payment-gateways::error", [
             'status' => $request->get('status', 400),
-            'title' => $request->get('title', 'We have a little problem.'),
+            'title' => $request->get('title', 'We have a little problem'),
             'message' => $request->get(
                 'message',
                 'Something completely went wrong. The issue could be that your payment was not successfully verified or your payment session has expired.'
