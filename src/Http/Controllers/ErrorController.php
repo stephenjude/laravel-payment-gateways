@@ -21,7 +21,7 @@ class ErrorController extends Controller
             'title' => $request->get('title', 'We have a little problem.'),
             'message' => $request->get(
                 'message',
-                'Looks something completely went wrong. The issue could be that your payment was not successfully verified or your payment session has expired.'
+                'Something completely went wrong. The issue could be that your payment was not successfully verified or your payment session has expired.'
             ),
         ]);
     }
