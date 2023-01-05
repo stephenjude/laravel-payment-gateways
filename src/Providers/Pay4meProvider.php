@@ -92,7 +92,7 @@ class Pay4meProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/$reference/verify");
+        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/verify/$reference");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
