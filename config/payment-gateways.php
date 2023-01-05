@@ -61,7 +61,7 @@ return [
         'pay4me' => [
             'name' => 'pay4me',
             'channels' => ['bank_transfer'],
-            'base_url' => env('PAY4ME_API_URL', 'https://checkout.pay4me.app/api'),
+            'base_url' => env('PAY4ME_API_URL', 'https://pay.pay4me.app/api'),
             'public' => env('PAY4ME_PUBLIC'),
             'secret' => env('PAY4ME_SECRET'),
         ],
