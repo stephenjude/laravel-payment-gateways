@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.10 - 2023-01-05
+
+- Update: Pay4Me provider default Api URL
+
 ## 1.0.9 - 2023-01-04
 
 - UPDATE: Pay4Me provider
