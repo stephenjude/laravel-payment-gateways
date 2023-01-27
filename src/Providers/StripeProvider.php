@@ -74,7 +74,7 @@ class StripeProvider extends AbstractProvider
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
-        throw_if($response->failed(), new InitializationException());
+        throw_if($response->failed(), new InitializationException($response->json('message')));
 
         return $response->json();
     }
