@@ -2,7 +2,18 @@
 
 namespace Stephenjude\PaymentGateway\Exceptions;
 
+use Throwable;
+
 class InitializationException extends HttpException
 {
-    protected $message = "payment initialization failed";
+    public function __construct($gatewayMessage = "", $code = 0, Throwable $previous = null)
+    {
+        $message = 'payment initialization failed';
+
+        if (!empty($gatewayMessage)) {
+            $message .= ": $gatewayMessage";
+        }
+
+        parent::__construct($message, $code, $previous);
+    }
 }

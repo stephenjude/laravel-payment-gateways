@@ -87,9 +87,9 @@ class FlutterwaveProvider extends AbstractProvider
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
-        throw_if($response->failed(), new InitializationException());
+        throw_if($response->failed(), new InitializationException($response->json('message')));
 
-        throw_if(is_null($response->json('data')), new InitializationException());
+        throw_if(is_null($response->json('data')), new InitializationException($response->json('message')));
 
         return $response->json('data');
     }
