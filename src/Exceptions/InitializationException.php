@@ -10,7 +10,7 @@ class InitializationException extends HttpException
     {
         $message = 'payment initialization failed';
 
-        if (!empty($gatewayMessage)) {
+        if (! empty($gatewayMessage)) {
             $message .= ": $gatewayMessage";
         }
 
