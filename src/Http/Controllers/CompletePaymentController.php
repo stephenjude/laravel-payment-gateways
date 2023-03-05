@@ -48,6 +48,8 @@ class CompletePaymentController extends Controller
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 
+            dd($exception->getMessage());
+
             return redirect()->route(config('payment-gateways.routes.error.name'));
         }
     }

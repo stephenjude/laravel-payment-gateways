@@ -17,8 +17,6 @@ class StripeProvider extends AbstractProvider
 
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['amount'] = $parameters['amount'];
-
         $parameters['reference'] = 'STP_'.Str::random(12);
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
@@ -32,10 +30,12 @@ class StripeProvider extends AbstractProvider
 
         $stripe = $this->initializeProvider($parameters);
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        dd($stripe);
+
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
-            paymentReference: $stripe['payment_intent'],
+            paymentReference: $stripe['id'],
             checkoutSecret: null,
             checkoutUrl: $stripe['url'],
             expires: $parameters['expires'],
@@ -81,11 +81,27 @@ class StripeProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents/$reference");
+        $checkoutSession = $this->http()
+            ->asForm()
+            ->get("$this->baseUrl/checkout/sessions/$reference");
+
+        $this->logResponseIfEnabledDebugMode($this->provider, $checkoutSession);
+
+        throw_if(
+            condition: $checkoutSession->failed(),
+            exception: new VerificationException($checkoutSession->json('error.message'))
+        );
+
+        $paymentIntent = $checkoutSession->json('payment_intent');
+
+        $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents/$paymentIntent");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
-        throw_if($response->failed(), new VerificationException());
+        throw_if(
+            condition: $response->failed(),
+            exception: new VerificationException($response->json('error.message'))
+        );
 
         return $response->json();
     }
