@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.13 - 2023-01-27
+
+- Add gateway error to exception.
+
+## 1.0.12 - 2023-01-09
+
+- Fixed dynamic support email - #6
+
 ## 1.0.11 - 2023-01-05
 
 - Fixed typographical errors.

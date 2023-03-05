@@ -13,9 +13,9 @@ Have you had to implement limited SDKs for accepting payments on your mobile app
 That's the problem this package solved.
 
 With this package you can generate a payment link and 
-return it to your mobile app when they make API calls and when the payment can be completed on the inapp browser.
+return it to your mobile app API call and the payment can be completed on the inapp browser.
 
-When the customer completes their payment, this package verifies the payment and executes the code defined in your 
+When the customer completes their payment, this package verifies the payment and execute the code defined inside your 
 custom closure. 
 
 The closure should look like this:
