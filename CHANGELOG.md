@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.17 - 2023-03-05
+
+- Clean up
+
 ## 1.0.16 - 2023-03-05
 
 - Clean up
