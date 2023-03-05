@@ -4,5 +4,5 @@ namespace Stephenjude\PaymentGateway\Exceptions;
 
 class InitializationException extends HttpException
 {
-    protected $message = "payment initialization failed";
+    protected $message = 'payment initialization failed';
 }
