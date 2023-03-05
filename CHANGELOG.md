@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.15 - 2023-03-05
+
+- Stripe payment verification
+
 ## 1.0.14 - 2023-03-05
 
 - Fixed stripe amount parameter.
