@@ -23,7 +23,7 @@ class PaymentGateway
 
     public static function make(string $proivder): AbstractProvider
     {
-        $class = "\\Stephenjude\\PaymentGateway\\Providers\\".ucwords($proivder)."Provider";
+        $class = '\\Stephenjude\\PaymentGateway\\Providers\\'.ucwords($proivder).'Provider';
 
         if (class_exists($class) && ! (new ReflectionClass($class))->isAbstract()) {
             return new $class();

@@ -16,7 +16,7 @@ class ErrorController extends Controller
 
     public function __invoke(Request $request)
     {
-        return view("payment-gateways::error", [
+        return view('payment-gateways::error', [
             'status' => $request->get('status', 400),
             'title' => $request->get('title', 'We have a little problem'),
             'message' => $request->get(

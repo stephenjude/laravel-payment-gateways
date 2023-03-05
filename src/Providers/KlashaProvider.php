@@ -81,7 +81,7 @@ class KlashaProvider extends AbstractProvider
     public function verifyProvider(string $reference): mixed
     {
         $response = $this->http()->acceptJson()->post("$this->baseUrl/nucleus/tnx/merchant/status", [
-            "tnxRef" => $reference,
+            'tnxRef' => $reference,
         ]);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);

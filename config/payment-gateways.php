@@ -65,6 +65,13 @@ return [
             'public' => env('PAY4ME_PUBLIC'),
             'secret' => env('PAY4ME_SECRET'),
         ],
+        'seerbit' => [
+            'name' => 'seerbit',
+            'channels' => ['card', 'account', 'transfer', 'ussd'],
+            'base_url' => env('SEERBIT_API_URL', 'https://seerbitapi.com/api/v2'),
+            'public' => env('SEERBIT_PUBLIC'),
+            'secret' => env('SEERBIT_SECRET'),
+        ],
         'paystack' => [
             'name' => 'paystack',
             'channels' => ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer'],
