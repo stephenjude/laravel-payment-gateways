@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 1.0.14 - 2023-03-05
+
+- Fixed stripe amount parameter.
+- WIP: Seerbit integration.
+
 ## 1.0.13 - 2023-01-27
 
 - Add gateway error to exception.
