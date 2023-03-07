@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.0 - 2023-03-07
+
+- Laravel 10 support
+
 ## 1.0.18 - 2023-03-07
 
 - Laravel 10 support
