@@ -21,7 +21,7 @@
         "illuminate/database": "^8.0|^9.0|^10.0",
         "illuminate/http": "^8.0|^9.0|^10.0",
         "illuminate/support": "^8.0|^9.0|^10.0",
-        "spatie/laravel-data": "^1.4|^1.5",
+        "spatie/laravel-data": "^1.4|^2.0",
         "spatie/laravel-package-tools": "^1.9.2"
     },
     "require-dev": {
@@ -30,7 +30,7 @@
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.1",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^9.5|^10.0"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
