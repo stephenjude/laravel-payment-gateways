@@ -40,15 +40,15 @@
 
                 @if($successful)
                     <p class="text-gray-600 my-2">
-                        {{config('payment-gateways.message.success')}}
+                        {!! config('payment-gateways.message.success') !!}
                     </p>
                 @elseif($payment->failed())
                     <p class="text-gray-600 my-2">
-                        {{config('payment-gateways.message.failed')}}
+                        {!! config('payment-gateways.message.failed') !!}
                     </p>
                 @elseif($payment->isProcessing())
                     <p class="text-gray-600 my-2">
-                        {{config('payment-gateways.message.pending')}}
+                        {!! config('payment-gateways.message.pending') !!}
                     </p>
                 @endif
                 @if(config('payment-gateways.support_email'))

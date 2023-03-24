@@ -73,9 +73,7 @@ class FlutterwaveProvider extends AbstractProvider
             date: Carbon::parse($provider['created_at'])->toDateTimeString(),
         );
 
-        if ($closure && $payment) {
-            $closure($payment);
-        }
+        $this->executeClosure($closure, $payment);
 
         return $payment;
     }

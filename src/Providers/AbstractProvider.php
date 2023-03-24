@@ -6,7 +6,9 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
+use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 abstract class AbstractProvider implements ProviderInterface
@@ -60,7 +62,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $expires = config('payment-gateway.cache.payment.expries');
 
-        Cache::remember($key, $expires, fn () => $paymentReference);
+        Cache::remember($key, $expires, fn() => $paymentReference);
     }
 
     public function getReference(string $sessionReference): string|null
@@ -75,13 +77,22 @@ abstract class AbstractProvider implements ProviderInterface
         return Http::withToken($this->secretKey)->acceptJson();
     }
 
+    public function executeClosure(?SerializableClosure $closure, PaymentData $paymentData): void
+    {
+        if ($closure && $paymentData) {
+            $closure = $closure->getClosure();
+
+            $closure($paymentData);
+        }
+    }
+
     abstract public function initializeProvider(array $parameters): mixed;
 
     abstract public function verifyProvider(string $paymentReference): mixed;
 
     protected function logResponseIfEnabledDebugMode(string $provider, Response $response): void
     {
-        if (! config('payment-gateways.debug_mode')) {
+        if (!config('payment-gateways.debug_mode')) {
             return;
         }
 

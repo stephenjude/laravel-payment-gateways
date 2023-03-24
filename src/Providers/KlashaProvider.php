@@ -44,9 +44,7 @@ class KlashaProvider extends AbstractProvider
             date: Carbon::now()->toDateTimeString(),
         );
 
-        if ($closure && $payment) {
-            $closure($payment);
-        }
+        $this->executeClosure($closure, $payment);
 
         return $payment;
     }
