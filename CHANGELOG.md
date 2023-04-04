@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.1 - 2023-04-04
+
+- Allow html contents on configurable gateway messages
+
 ## 2.0.0 - 2023-03-07
 
 - Laravel 10 support
