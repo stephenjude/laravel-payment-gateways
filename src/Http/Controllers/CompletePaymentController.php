@@ -41,12 +41,25 @@ class CompletePaymentController extends Controller
 
             $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
 
+            if ($customSuccessRoute = config('payment-gateways.routes.custom.success.name')) {
+                return redirect()->route($customSuccessRoute, [
+                    'reference' => $paymentReference
+                ]);
+            }
+
             return view('payment-gateways::status', [
                 'payment' => $payment,
                 'successful' => $payment->isSuccessful(),
             ]);
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
+
+            if ($customeFailedRoute = config('payment-gateways.routes.custom.failed.name')) {
+                return redirect()->route($customeFailedRoute, [
+                    'reference' => $paymentReference,
+                    'message' => $exception->getMessage()
+                ]);
+            }
 
             return redirect()->route(config('payment-gateways.routes.error.name'));
         }

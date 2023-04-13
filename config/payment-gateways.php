@@ -38,6 +38,16 @@ return [
             'path' => 'payment-gateway-error',
             'name' => 'payment.gateway.error',
         ],
+        'custom' => [
+            'success' => [
+                'path' => null,
+                'name' => null,
+            ],
+            'failed' => [
+                'path' => null,
+                'name' => null,
+            ],
+        ],
     ],
 
     /**
