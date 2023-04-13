@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.2 - 2023-04-13
+
+- FEATURE: Add custom route configs for successful and failed payments.
+
 ## 2.0.1 - 2023-04-04
 
 - Allow html contents on configurable gateway messages
