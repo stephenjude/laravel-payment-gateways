@@ -38,6 +38,10 @@ return [
             'path' => 'payment-gateway-error',
             'name' => 'payment.gateway.error',
         ],
+
+        /*
+         * Define your custom routes for successful and failed payments.
+         */
         'custom' => [
             'success' => [
                 'path' => null,
