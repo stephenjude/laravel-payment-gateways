@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.3 - 2023-04-25
+
+- SEERBIT Integration
+
 ## 2.0.2 - 2023-04-13
 
 - FEATURE: Add custom route configs for successful and failed payments.
