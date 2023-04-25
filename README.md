@@ -98,6 +98,12 @@ PAY4ME_PUBLIC=
 PAY4ME_SECRET=
 ```
 
+### Pay4Me Setup
+```
+SEERBIT_PUBLIC=
+SEERBIT_SECRET=
+```
+
 ### Paystack Setup
 ```
 PAYSTACK_PUBLIC=

@@ -3,12 +3,15 @@
 namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
+use Seerbit\Client;
+use Seerbit\Service\Standard\StandardService;
 use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -48,8 +51,7 @@ class SeerbitProvider extends AbstractProvider
                     'currency' => Arr::get($parameters, 'currency'),
                     'country' => Arr::get($parameters, 'currency'),
                     'paymentReference' => Arr::get($parameters, 'reference'),
-                    'channels' => $this->getChannels(),
-                    'metadata' => Arr::get($parameters, 'meta'),
+                    'tokenize' => true,
                     'callbackUrl' => $parameters['callback_url']
                         ?? route(config('payment-gateways.routes.callback.name'), [
                             'reference' => $parameters['reference'],
@@ -96,15 +98,23 @@ class SeerbitProvider extends AbstractProvider
 
     public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->post("$this->baseUrl/payments", $parameters);
+        try {
+            $token = Http::acceptJson()
+                ->contentType('application/json')
+                ->post($this->baseUrl.'/encrypt/keys', ['key' => "$this->secretKey.$this->publicKey",])
+                ->json('data.EncryptedSecKey.encryptedKey');
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+            $client = new Client();
+            $client->setToken($token);
+            $client->setPublicKey($this->publicKey);
+            $client->setSecretKey($this->secretKey);
 
-        if ($response->failed()) {
-            throw new InitializationException($response->json('message'), $response->status());
+            $response = (new StandardService($client))->Initialize($parameters);
+
+            return $response->toArray()['data'];
+        } catch (\Exception $exception) {
+            throw new InitializationException($exception->getMessage(), $exception->getCode());
         }
-
-        return $response->json('data');
     }
 
     public function verifyProvider(string $reference): mixed
