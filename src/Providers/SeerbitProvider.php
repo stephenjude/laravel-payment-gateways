@@ -2,8 +2,6 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
-use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -12,6 +10,7 @@ use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Seerbit\Client;
 use Seerbit\Service\Standard\StandardService;
+use Seerbit\Service\Status\TransactionStatusService;
 use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
@@ -21,21 +20,9 @@ class SeerbitProvider extends AbstractProvider
 {
     public string $provider = 'seerbit';
 
-    public function http(): PendingRequest
-    {
-        $bearer = Http::acceptJson()
-            ->contentType('application/json')
-            ->post($this->baseUrl.'/encrypt/keys', [
-                'key' => "$this->secretKey.$this->publicKey",
-            ])
-            ->json('data.EncryptedSecKey.encryptedKey');
-
-        return Http::withToken($bearer)->acceptJson();
-    }
-
     public function initializePayment(array $parameters = []): SessionData
     {
-        $parameters['reference'] = 'PTK_'.Str::random(12);
+        $parameters['reference'] = 'SEBT_'.Str::random(12);
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
@@ -79,10 +66,10 @@ class SeerbitProvider extends AbstractProvider
         $provider['payments'] = $provider;
 
         $payment = new PaymentData(
-            email: $provider['email'],
-            meta: ['mobile_number' => $provider['mobilenumber']],
+            email: $provider['data']['payments']['email'],
+            meta: ['mobile_number' => $provider['data']['payments']['mobilenumber']],
             amount: $provider['amount'],
-            currency: $provider['currency'],
+            currency: 'NGN',
             reference: $paymentReference,
             provider: $this->provider,
             status: $provider['status'],
@@ -99,17 +86,7 @@ class SeerbitProvider extends AbstractProvider
     public function initializeProvider(array $parameters): mixed
     {
         try {
-            $token = Http::acceptJson()
-                ->contentType('application/json')
-                ->post($this->baseUrl.'/encrypt/keys', ['key' => "$this->secretKey.$this->publicKey",])
-                ->json('data.EncryptedSecKey.encryptedKey');
-
-            $client = new Client();
-            $client->setToken($token);
-            $client->setPublicKey($this->publicKey);
-            $client->setSecretKey($this->secretKey);
-
-            $response = (new StandardService($client))->Initialize($parameters);
+            $response = (new StandardService($this->getClient()))->Initialize($parameters);
 
             return $response->toArray()['data'];
         } catch (\Exception $exception) {
@@ -119,14 +96,32 @@ class SeerbitProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/payments/query/$reference");
+        try {
+            $response = (new TransactionStatusService($this->getClient()))->ValidateTransactionStatus($reference);
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        if ($response->failed()) {
-            throw new VerificationException($response->json('message'), $response->json('status'));
+            return $response->toArray();
+        } catch (\Exception $exception) {
+            throw new VerificationException($exception->getMessage(), $exception->getCode());
         }
+    }
 
-        return $response->json('data');
+    public function getClient(): Client
+    {
+        $token = $this->getToken();
+
+        $client = new Client();
+        $client->setToken($token);
+        $client->setPublicKey($this->publicKey);
+        $client->setSecretKey($this->secretKey);
+
+        return $client;
+    }
+
+    private function getToken()
+    {
+        return Http::acceptJson()
+            ->contentType('application/json')
+            ->post($this->baseUrl.'/encrypt/keys', ['key' => "$this->secretKey.$this->publicKey",])
+            ->json('data.EncryptedSecKey.encryptedKey');
     }
 }
