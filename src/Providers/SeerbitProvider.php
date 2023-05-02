@@ -121,7 +121,7 @@ class SeerbitProvider extends AbstractProvider
     {
         return Http::acceptJson()
             ->contentType('application/json')
-            ->post($this->baseUrl.'/encrypt/keys', ['key' => "$this->secretKey.$this->publicKey",])
+            ->post($this->baseUrl.'/encrypt/keys', ['key' => "$this->secretKey.$this->publicKey"])
             ->json('data.EncryptedSecKey.encryptedKey');
     }
 }

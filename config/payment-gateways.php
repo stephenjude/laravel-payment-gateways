@@ -79,6 +79,14 @@ return [
             'public' => env('PAY4ME_PUBLIC'),
             'secret' => env('PAY4ME_SECRET'),
         ],
+        'monnify' => [
+            'name' => 'monnify',
+            'channels' => ['CARD', 'ACCOUNT_TRANSFER'],
+            'base_url' => env('MONNIFY_API_URL', 'https://sandbox.monnify.com/api/v1'),
+            'public' => env('MONNIFY_PUBLIC'),
+            'secret' => env('MONNIFY_SECRET'),
+            'contract_code' => env('MONNIFY_CONTRACT_CODE'),
+        ],
         'seerbit' => [
             'name' => 'seerbit',
             'channels' => ['card', 'account', 'transfer', 'ussd'],

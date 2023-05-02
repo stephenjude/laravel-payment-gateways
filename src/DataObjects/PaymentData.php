@@ -21,8 +21,8 @@ class PaymentData extends Data
     public function isSuccessful(): bool
     {
         // Paystack: success; Flutterwave: successful; Stripe: succeeded;
-        return match ($this->status) {
-            'success', 'succeeded', 'successful' => true,
+        return match (strtolower($this->status)) {
+            'success', 'succeeded', 'successful','paid' => true,
             default => false
         };
     }
@@ -30,8 +30,8 @@ class PaymentData extends Data
     public function isProcessing(): bool
     {
         // Stripe: processing;
-        return match ($this->status) {
-            'processing' => true,
+        return match (strtolower($this->status)) {
+            'processing', 'pending' => true,
             default => false
         };
     }
@@ -39,8 +39,8 @@ class PaymentData extends Data
     public function failed(): bool
     {
         // Paystack: failed; Flutterwave: failed; Stripe: failed;
-        return match ($this->status) {
-            'failed' => true,
+        return match (strtolower($this->status)) {
+            'failed','expired' => true,
             default => false
         };
     }
