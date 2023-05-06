@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.4 - 2023-05-06
+
+- Monnify integration 🔥
+
 ## 2.0.3 - 2023-04-25
 
 - SEERBIT Integration
