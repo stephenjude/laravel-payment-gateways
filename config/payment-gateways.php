@@ -82,7 +82,7 @@ return [
         'monnify' => [
             'name' => 'monnify',
             'channels' => ['CARD', 'ACCOUNT_TRANSFER'],
-            'base_url' => env('MONNIFY_API_URL', 'https://sandbox.monnify.com/api/v1'),
+            'base_url' => env('MONNIFY_API_URL', 'https://api.monnify.com/api/v1'),
             'public' => env('MONNIFY_PUBLIC'),
             'secret' => env('MONNIFY_SECRET'),
             'contract_code' => env('MONNIFY_CONTRACT_CODE'),
