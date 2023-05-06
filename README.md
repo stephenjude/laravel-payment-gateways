@@ -67,25 +67,25 @@ use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 $provider = PaymentGateway::make('paystack')
 
 $paymentSession = $provider->initializePayment([
-                'currency' => 'NGN', // required
-                'amount' => 100, // required
-                'email' => 'customer@email.com', // required
-                'meta' => [ 'name' => 'Stephen Jude', 'phone' => '081xxxxxxxxx'],
-                'closure' => function (PaymentData $payment){
-                    /* 
-                     * Payment verification happens immediately after the customer makes payment. 
-                     * The payment data gotten from the verification will be injected into this closure.
-                     */
-                    logger('payment details', [
-                       'currency' => $payment->currency, 
-                       'amount' => $payment->amount, 
-                       'status' => $payment->status,
-                       'reference' => $payment->reference,   
-                       'provider' => $payment->provider,   
-                       'date' => $payment->date,                   
-                    ]);
-                },
-            ]);
+    'currency' => 'NGN', // required
+    'amount' => 100, // required
+    'email' => 'customer@email.com', // required
+    'meta' => [ 'name' => 'Stephen Jude', 'phone' => '081xxxxxxxxx'],
+    'closure' => function (PaymentData $payment){
+        /* 
+         * Payment verification happens immediately after the customer makes payment. 
+         * The payment data gotten from the verification will be injected into this closure.
+         */
+        logger('payment details', [
+           'currency' => $payment->currency, 
+           'amount' => $payment->amount, 
+           'status' => $payment->status,
+           'reference' => $payment->reference,   
+           'provider' => $payment->provider,   
+           'date' => $payment->date,                   
+        ]);
+    },
+]);
 
 $paymentSession->provider;
 $paymentSession->checkoutUrl;
