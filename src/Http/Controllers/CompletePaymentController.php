@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cache;
 use Stephenjude\PaymentGateway\PaymentGateway;
 
 class CompletePaymentController extends Controller
@@ -18,6 +19,8 @@ class CompletePaymentController extends Controller
 
     public function __invoke(Request $request, string $provider, string $reference)
     {
+        $key = config('payment-gateways.cache.session.key').$reference;
+
         try {
             $paymentProvider = PaymentGateway::make($provider);
 
@@ -36,8 +39,8 @@ class CompletePaymentController extends Controller
              * any reference for the transactions via the callback url.
              */
             $paymentReference = $request->get('transaction_id')
-                ?? $sessionData?->paymentReference
-                ?? $sessionData?->sessionReference;
+                ?? $sessionData->paymentReference
+                ?? $sessionData->sessionReference;
 
             $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
 
@@ -53,6 +56,8 @@ class CompletePaymentController extends Controller
             ]);
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
+
+            dd($exception->getMessage());
 
             if ($customeFailedRoute = config('payment-gateways.routes.custom.failed.name')) {
                 return redirect()->route($customeFailedRoute, [

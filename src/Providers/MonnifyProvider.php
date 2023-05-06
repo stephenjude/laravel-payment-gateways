@@ -38,47 +38,51 @@ class MonnifyProvider extends AbstractProvider
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
-            $monnify = $this->initializeProvider([
-                'customerEmail' => $email = Arr::get($parameters, 'email'),
-                'customerName' => Arr::get($parameters, 'meta.name', $email),
-                'amount' => Arr::get($parameters, 'amount'),
-                'currencyCode' => Arr::get($parameters, 'currency'),
-                'contractCode' => config('payment-gateways.providers.monnify.contract_code'),
-                'paymentReference' => Arr::get($parameters, 'reference'),
-                'paymentMethods' => $this->getChannels(),
-                'redirectUrl' => $parameters['callback_url']
-                    ?? route(config('payment-gateways.routes.callback.name'), [
-                        'reference' => $parameters['reference'],
-                        'provider' => $this->provider,
-                    ]),
-            ]);
+        $monnify = $this->initializeProvider([
+            'customerEmail' => $email = Arr::get($parameters, 'email'),
+            'customerName' => Arr::get($parameters, 'meta.name', $email),
+            'amount' => Arr::get($parameters, 'amount'),
+            'currencyCode' => Arr::get($parameters, 'currency'),
+            'contractCode' => config('payment-gateways.providers.monnify.contract_code'),
+            'paymentReference' => Arr::get($parameters, 'reference'),
+            'paymentMethods' => $this->getChannels(),
+            'redirectUrl' => $parameters['callback_url']
+                ?? route(config('payment-gateways.routes.callback.name'), [
+                    'reference' => $parameters['reference'],
+                    'provider' => $this->provider,
+                ]),
+        ]);
 
-            return new SessionData(
-                provider: $this->provider,
-                sessionReference: $parameters['reference'],
-                paymentReference: $monnify['transactionReference'],
-                checkoutSecret: null,
-                checkoutUrl: $monnify['checkoutUrl'],
-                expires: $parameters['expires'],
-                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
-            );
-        });
+        $sessionData = new SessionData(
+            provider: $this->provider,
+            sessionReference: $parameters['reference'],
+            paymentReference: $monnify['transactionReference'],
+            checkoutSecret: null,
+            checkoutUrl: $monnify['checkoutUrl'],
+            expires: $parameters['expires'],
+            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+        );
+
+        return Cache::remember(
+            key: $parameters['session_cache_key'],
+            ttl: $parameters['expires'],
+            callback: fn() => $sessionData
+        );
     }
 
     public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
     {
-        $provider = $this->verifyProvider($paymentReference);
+        $monnify = $this->verifyProvider($paymentReference);
 
         $payment = new PaymentData(
-            email: $provider['customer']['email'],
-            meta: $provider['metaData'],
-            amount: $provider['amountPaid'],
-            currency: $provider['currency'],
+            email: $monnify['customerDTO']['email'],
+            meta: $monnify['metaData'],
+            amount: $monnify['amountPaid'],
+            currency: $monnify['currencyCode'],
             reference: $paymentReference,
             provider: $this->provider,
-            status: $provider['paymentStatus'],
-            date: Carbon::parse($provider['paidOn'])->toDateTimeString(),
+            status: $monnify['paymentStatus'],
+            date: Carbon::parse($monnify['completedOn'])->toDateTimeString(),
         );
 
         $this->executeClosure($closure, $payment);
