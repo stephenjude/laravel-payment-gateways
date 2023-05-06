@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/stephenjude/laravel-payment-gateways.svg?style=flat-square)](https://packagist.org/packages/stephenjude/laravel-payment-gateways)
 
 A simple Laravel implementation for all payment providers. This package supports 
-Paystack, Flutterwave, Klasha, and Stripe.
+Paystack, Monnify, Pay4Me Pay, Seerbit Flutterwave, Klasha, and Stripe.
 
 ## Use Case
 Have you had to implement limited SDKs for accepting payments on your mobile app. 
@@ -56,7 +56,7 @@ php artisan vendor:publish --tag="payment-gateways-views"
 ```
 
 ## Usage
-This package currently supports `paystack`, `flutterwave`, `klasha` and `stripe`.
+This package currently supports `paystack`, `monnify`, `pay4me`, `seerbit`, `flutterwave`, `klasha` and `stripe`.
 
 ### How to initialize a payment session
 
