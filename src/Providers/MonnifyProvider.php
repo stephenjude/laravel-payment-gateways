@@ -66,7 +66,7 @@ class MonnifyProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => $sessionData
+            callback: fn () => $sessionData
         );
     }
 
