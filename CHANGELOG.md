@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.6 - 2023-05-11
+
+- Added Seerbit `approved` status code
+- Removed debug statement
+- Clean up
+
 ## 2.0.5 - 2023-05-06
 
 - Switch to Monnify live API
