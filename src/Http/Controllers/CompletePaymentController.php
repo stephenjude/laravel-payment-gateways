@@ -56,8 +56,6 @@ class CompletePaymentController extends Controller
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 
-            dd($exception->getMessage());
-
             if ($customeFailedRoute = config('payment-gateways.routes.custom.failed.name')) {
                 return redirect()->route($customeFailedRoute, [
                     'reference' => $paymentReference,

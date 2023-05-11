@@ -22,7 +22,7 @@ class PaymentData extends Data
     {
         // Paystack: success; Flutterwave: successful; Stripe: succeeded;
         return match (strtolower($this->status)) {
-            'success', 'succeeded', 'successful','paid' => true,
+            'success', 'succeeded', 'successful','paid', 'approved' => true,
             default => false
         };
     }

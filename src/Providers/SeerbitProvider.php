@@ -39,9 +39,9 @@ class SeerbitProvider extends AbstractProvider
             'country' => Arr::get($parameters, 'country_code', 'NG'),
             'paymentReference' => Arr::get($parameters, 'reference'),
             'callbackUrl' => $parameters['callback_url'] ?? route(config('payment-gateways.routes.callback.name'), [
-                    'reference' => $parameters['reference'],
-                    'provider' => $this->provider,
-                ]),
+                'reference' => $parameters['reference'],
+                'provider' => $this->provider,
+            ]),
         ]);
 
         $sessionData = new SessionData(
@@ -68,15 +68,15 @@ class SeerbitProvider extends AbstractProvider
         $paymentData = new PaymentData(
             email: $monnify['customers']['customerEmail'],
             meta: [
-                "sourceIP" => $monnify["payments"]["sourceIP"],
-                "deviceType" => $monnify["payments"]["deviceType"],
+                'sourceIP' => $monnify['payments']['sourceIP'],
+                'deviceType' => $monnify['payments']['deviceType'],
             ],
-            amount: $monnify["payments"]['amount'],
-            currency: $monnify["payments"]['currency'],
+            amount: $monnify['payments']['amount'],
+            currency: $monnify['payments']['currency'],
             reference: $paymentReference,
             provider: $this->provider,
-            status: $monnify["payments"]['gatewayMessage'],
-            date: Carbon::parse($monnify["payments"]['transactionProcessedTime'])->toDateTimeString(),
+            status: $monnify['payments']['gatewayMessage'],
+            date: Carbon::parse($monnify['payments']['transactionProcessedTime'])->toDateTimeString(),
         );
 
         $this->executeClosure($closure, $paymentData);
