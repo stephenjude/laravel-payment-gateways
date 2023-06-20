@@ -77,7 +77,7 @@ class Pay4meProvider extends AbstractProvider
 
     public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transactions/initialize", $parameters);
+        $response = $this->http()->acceptJson()->post($this->baseUrl."api/transactions/initialize", $parameters);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
@@ -90,7 +90,7 @@ class Pay4meProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/verify/$reference");
+        $response = $this->http()->acceptJson()->get($this->baseUrl."api/transactions/verify/$reference");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

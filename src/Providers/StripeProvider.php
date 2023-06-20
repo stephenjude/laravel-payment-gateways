@@ -65,7 +65,7 @@ class StripeProvider extends AbstractProvider
     {
         $response = $this->http()->asForm()->post(
             "$this->baseUrl/checkout/sessions",
-            $this->getProviderInitializationRequestParams($parameters)
+            $this->prepareInitializationData($parameters)
         );
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
@@ -79,7 +79,7 @@ class StripeProvider extends AbstractProvider
     {
         $checkoutSession = $this->http()
             ->asForm()
-            ->get("$this->baseUrl/checkout/sessions/$reference");
+            ->get($this->baseUrl."v1/checkout/sessions/$reference");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $checkoutSession);
 
@@ -90,7 +90,7 @@ class StripeProvider extends AbstractProvider
 
         $paymentIntent = $checkoutSession->json('payment_intent');
 
-        $response = $this->http()->asForm()->post("$this->baseUrl/payment_intents/$paymentIntent");
+        $response = $this->http()->asForm()->post($this->baseUrl."v1/payment_intents/$paymentIntent");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
@@ -102,7 +102,7 @@ class StripeProvider extends AbstractProvider
         return $response->json();
     }
 
-    private function getProviderInitializationRequestParams(array $parameters): array
+    private function prepareInitializationData(array $parameters): array
     {
         return [
             'line_items' => [

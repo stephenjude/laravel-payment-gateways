@@ -78,7 +78,7 @@ class PaystackProvider extends AbstractProvider
 
     public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/transaction/initialize", $parameters);
+        $response = $this->http()->acceptJson()->post($this->baseUrl."transaction/initialize", $parameters);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
@@ -91,7 +91,7 @@ class PaystackProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transaction/verify/$reference");
+        $response = $this->http()->acceptJson()->get($this->baseUrl."transaction/verify/$reference");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

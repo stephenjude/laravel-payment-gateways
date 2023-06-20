@@ -24,7 +24,7 @@ class MonnifyProvider extends AbstractProvider
             ->withHeaders([
                 'Authorization' => 'Basic '.base64_encode("$this->publicKey:$this->secretKey"),
             ])
-            ->post($this->baseUrl.'/auth/login')
+            ->post($this->baseUrl.'api/v1/auth/login')
             ->json('responseBody.accessToken');
 
         return Http::withToken($token)->acceptJson();
@@ -95,7 +95,7 @@ class MonnifyProvider extends AbstractProvider
         $response = $this->http()
             ->acceptJson()
             ->post(
-                url: "$this->baseUrl/merchant/transactions/init-transaction",
+                url: $this->baseUrl."api/v1/merchant/transactions/init-transaction",
                 data: $parameters
             );
 
@@ -110,7 +110,7 @@ class MonnifyProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/$reference");
+        $response = $this->http()->acceptJson()->get($this->baseUrl."api/v1/transactions/$reference");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

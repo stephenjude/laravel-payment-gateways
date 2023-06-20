@@ -80,7 +80,7 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->acceptJson()->post("$this->baseUrl/payments", $parameters);
+        $response = $this->http()->acceptJson()->post($this->baseUrl."v3/payments", $parameters);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 
@@ -93,7 +93,7 @@ class FlutterwaveProvider extends AbstractProvider
 
     public function verifyProvider(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->get("$this->baseUrl/transactions/$reference/verify");
+        $response = $this->http()->acceptJson()->get($this->baseUrl."v3/transactions/$reference/verify");
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

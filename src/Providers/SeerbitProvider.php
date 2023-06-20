@@ -88,7 +88,7 @@ class SeerbitProvider extends AbstractProvider
     {
         try {
             return $this->http()
-                ->post($this->baseUrl.'/payments', $parameters)
+                ->post($this->baseUrl.'api/v2/payments', $parameters)
                 ->json('data');
         } catch (\Exception $exception) {
             throw new InitializationException($exception->getMessage(), $exception->getCode());
@@ -99,7 +99,7 @@ class SeerbitProvider extends AbstractProvider
     {
         try {
             return $this->http()
-                ->get($this->baseUrl."/payments/query/$reference")
+                ->get($this->baseUrl."api/v2/payments/query/$reference")
                 ->json('data');
         } catch (\Exception $exception) {
             throw new VerificationException($exception->getMessage(), $exception->getCode());
