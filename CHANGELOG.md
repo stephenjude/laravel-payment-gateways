@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.0.8 - 2023-06-21
+
+- Fixed API URL path usage
+
 ## 2.0.7 - 2023-06-20
 
 - Update API URL usage
