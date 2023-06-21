@@ -78,7 +78,7 @@ class PaystackProvider extends AbstractProvider
 
     public function initializeProvider(array $parameters): mixed
     {
-        $response = $this->http()->acceptJson()->post($this->baseUrl."transaction/initialize", $parameters);
+        $response = $this->http()->acceptJson()->post($this->baseUrl.'transaction/initialize', $parameters);
 
         $this->logResponseIfEnabledDebugMode($this->provider, $response);
 

@@ -95,7 +95,7 @@ class MonnifyProvider extends AbstractProvider
         $response = $this->http()
             ->acceptJson()
             ->post(
-                url: $this->baseUrl."api/v1/merchant/transactions/init-transaction",
+                url: $this->baseUrl.'api/v1/merchant/transactions/init-transaction',
                 data: $parameters
             );
 

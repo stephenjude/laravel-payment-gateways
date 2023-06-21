@@ -39,9 +39,9 @@ class SeerbitProvider extends AbstractProvider
             'country' => Arr::get($parameters, 'country_code', 'NG'),
             'paymentReference' => Arr::get($parameters, 'reference'),
             'callbackUrl' => $parameters['callback_url'] ?? route(config('payment-gateways.routes.callback.name'), [
-                'reference' => $parameters['reference'],
-                'provider' => $this->provider,
-            ]),
+                    'reference' => $parameters['reference'],
+                    'provider' => $this->provider,
+                ]),
         ]);
 
         $sessionData = new SessionData(
@@ -57,7 +57,7 @@ class SeerbitProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn () => $sessionData
+            callback: fn() => $sessionData
         );
     }
 
@@ -109,7 +109,7 @@ class SeerbitProvider extends AbstractProvider
     private function getToken()
     {
         return Http::acceptJson()
-            ->post($this->baseUrl.'/encrypt/keys', ['key' => $this->secretKey.'.'.$this->publicKey])
+            ->post($this->baseUrl.'api/v2/encrypt/keys', ['key' => $this->secretKey.'.'.$this->publicKey])
             ->json('data.EncryptedSecKey.encryptedKey');
     }
 }
