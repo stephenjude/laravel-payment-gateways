@@ -62,7 +62,7 @@ class MonnifyProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => new SessionData(
+            callback: fn () => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: $monnify['responseBody']['transactionReference'],
@@ -109,7 +109,7 @@ class MonnifyProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'responseBody.pageable.totalPages'),
             ],
             'data' => collect(Arr::get($response, 'responseBody.content'))
-                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
                 ->toArray(),
         ];
     }
