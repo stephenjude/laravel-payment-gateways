@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
@@ -23,7 +23,7 @@ class SeerbitProvider extends AbstractProvider
         return Http::withToken($this->getToken())->acceptJson();
     }
 
-    public function initializePayment(array $parameters = []): SessionData
+    public function initializeTransaction(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'SEBT_'.Str::random(12);
 
@@ -39,9 +39,9 @@ class SeerbitProvider extends AbstractProvider
             'country' => Arr::get($parameters, 'country_code', 'NG'),
             'paymentReference' => Arr::get($parameters, 'reference'),
             'callbackUrl' => $parameters['callback_url'] ?? route(config('payment-gateways.routes.callback.name'), [
-                    'reference' => $parameters['reference'],
-                    'provider' => $this->provider,
-                ]),
+                'reference' => $parameters['reference'],
+                'provider' => $this->provider,
+            ]),
         ]);
 
         $sessionData = new SessionData(
@@ -61,11 +61,11 @@ class SeerbitProvider extends AbstractProvider
         );
     }
 
-    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure): PaymentTransactionData|null
     {
-        $monnify = $this->verifyProvider($paymentReference);
+        $monnify = $this->verifyTransaction($reference);
 
-        $paymentData = new PaymentData(
+        $paymentData = new PaymentTransactionData(
             email: $monnify['customers']['customerEmail'],
             meta: [
                 'sourceIP' => $monnify['payments']['sourceIP'],
@@ -73,7 +73,7 @@ class SeerbitProvider extends AbstractProvider
             ],
             amount: $monnify['payments']['amount'],
             currency: $monnify['payments']['currency'],
-            reference: $paymentReference,
+            reference: $reference,
             provider: $this->provider,
             status: $monnify['payments']['gatewayMessage'],
             date: Carbon::parse($monnify['payments']['transactionProcessedTime'])->toDateTimeString(),
@@ -95,7 +95,7 @@ class SeerbitProvider extends AbstractProvider
         }
     }
 
-    public function verifyProvider(string $reference): mixed
+    public function verifyTransaction(string $reference): mixed
     {
         try {
             return $this->http()

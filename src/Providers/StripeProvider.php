@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
@@ -15,7 +15,7 @@ class StripeProvider extends AbstractProvider
 {
     public string $provider = 'stripe';
 
-    public function initializePayment(array $parameters = []): SessionData
+    public function initializeTransaction(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'STP_'.Str::random(12);
 
@@ -41,16 +41,16 @@ class StripeProvider extends AbstractProvider
         ));
     }
 
-    public function confirmPayment(string $paymentReference, SerializableClosure|null $closure): PaymentData|null
+    public function confirmTransaction(string $reference, SerializableClosure|null $closure): PaymentTransactionData|null
     {
-        $provider = $this->verifyProvider($paymentReference);
+        $provider = $this->verifyTransaction($reference);
 
-        $payment = new PaymentData(
+        $payment = new PaymentTransactionData(
             email: Arr::get($provider['charges'], 'data.0.billing_details.email'),
             meta: $provider['metadata'],
             amount: ($provider['amount'] / 100),
             currency: $provider['currency'],
-            reference: $paymentReference,
+            reference: $reference,
             provider: $this->provider,
             status: $provider['status'],
             date: null,
@@ -75,7 +75,7 @@ class StripeProvider extends AbstractProvider
         return $response->json();
     }
 
-    public function verifyProvider(string $reference): mixed
+    public function verifyTransaction(string $reference): mixed
     {
         $checkoutSession = $this->http()
             ->asForm()

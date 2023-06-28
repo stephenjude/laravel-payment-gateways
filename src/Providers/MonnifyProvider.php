@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\InitializationException;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
@@ -30,7 +30,7 @@ class MonnifyProvider extends AbstractProvider
         return Http::withToken($token)->acceptJson();
     }
 
-    public function initializePayment(array $parameters = []): SessionData
+    public function initializeTransaction(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'MNFY_'.Str::random(12);
 
@@ -70,16 +70,16 @@ class MonnifyProvider extends AbstractProvider
         );
     }
 
-    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure): PaymentTransactionData|null
     {
-        $monnify = $this->verifyProvider($paymentReference);
+        $monnify = $this->verifyTransaction($reference);
 
-        $payment = new PaymentData(
+        $payment = new PaymentTransactionData(
             email: $monnify['customerDTO']['email'],
             meta: $monnify['metaData'],
             amount: $monnify['amountPaid'],
             currency: $monnify['currencyCode'],
-            reference: $paymentReference,
+            reference: $reference,
             provider: $this->provider,
             status: $monnify['paymentStatus'],
             date: Carbon::parse($monnify['completedOn'])->toDateTimeString(),
@@ -108,7 +108,7 @@ class MonnifyProvider extends AbstractProvider
         return $response->json('responseBody');
     }
 
-    public function verifyProvider(string $reference): mixed
+    public function verifyTransaction(string $reference): mixed
     {
         $response = $this->http()->acceptJson()->get($this->baseUrl."api/v1/transactions/$reference");
 

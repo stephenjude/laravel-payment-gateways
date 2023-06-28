@@ -41,7 +41,7 @@ class CompletePaymentController extends Controller
                 ?? $sessionData->paymentReference
                 ?? $sessionData->sessionReference;
 
-            $payment = $paymentProvider->confirmPayment($paymentReference, $sessionData->closure);
+            $payment = $paymentProvider->confirmTransaction($paymentReference, $sessionData->closure);
 
             if ($customSuccessRoute = config('payment-gateways.routes.custom.success.name')) {
                 return redirect()->route($customSuccessRoute, [

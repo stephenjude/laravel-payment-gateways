@@ -19,10 +19,11 @@ When the customer completes their payment, this package verifies the payment and
 custom closure. 
 
 The closure should look like this:
-```php
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
 
-function (PaymentData $payment){
+```php
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+
+function (PaymentTransactionData $payment){
     $order->update([
         'status' => $payment->status, 
         'amount' => $payment->amount, 
@@ -62,16 +63,16 @@ This package currently supports `paystack`, `monnify`, `pay4me`, `seerbit`, `flu
 
 ```php
 use Stephenjude\PaymentGateway\PaymentGateway;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 
 $provider = PaymentGateway::make('paystack')
 
-$paymentSession = $provider->initializePayment([
+$paymentSession = $provider->initializeTransaction([
     'currency' => 'NGN', // required
     'amount' => 100, // required
     'email' => 'customer@email.com', // required
     'meta' => [ 'name' => 'Stephen Jude', 'phone' => '081xxxxxxxxx'],
-    'closure' => function (PaymentData $payment){
+    'closure' => function (PaymentTransactionData $payment){
         /* 
          * Payment verification happens immediately after the customer makes payment. 
          * The payment data gotten from the verification will be injected into this closure.

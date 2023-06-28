@@ -7,16 +7,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
-use Stephenjude\PaymentGateway\Exceptions\InitializationException;
-use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class PaystackProvider extends AbstractProvider
 {
     public string $provider = 'paystack';
 
-    public function initializePayment(array $parameters = []): SessionData
+    public function initializeTransaction(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'PTK_'.Str::random(12);
 
@@ -24,13 +22,15 @@ class PaystackProvider extends AbstractProvider
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], function () use ($parameters) {
-            /*
-             * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
-             */
-            $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
+        /*
+        * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
+        */
+        $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
 
-            $paystack = $this->initializeProvider([
+        $paystack = $this->request(
+            method: 'POST',
+            path: 'transaction/initialize',
+            payload: [
                 'email' => Arr::get($parameters, 'email'),
                 'amount' => $amount,
                 'currency' => Arr::get($parameters, 'currency'),
@@ -42,63 +42,72 @@ class PaystackProvider extends AbstractProvider
                         'reference' => $parameters['reference'],
                         'provider' => $this->provider,
                     ]),
-            ]);
-
-            return new SessionData(
-                provider: $this->provider,
-                sessionReference: $parameters['reference'],
-                paymentReference: null,
-                checkoutSecret: null,
-                checkoutUrl: $paystack['authorization_url'],
-                expires: $parameters['expires'],
-                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
-            );
-        });
-    }
-
-    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
-    {
-        $provider = $this->verifyProvider($paymentReference);
-
-        $payment = new PaymentData(
-            email: $provider['customer']['email'],
-            meta: $provider['metadata'],
-            amount: ($provider['amount'] / 100),
-            currency: $provider['currency'],
-            reference: $paymentReference,
-            provider: $this->provider,
-            status: $provider['status'],
-            date: Carbon::parse($provider['transaction_date'])->toDateTimeString(),
+            ]
         );
 
-        $this->executeClosure($closure, $payment);
-
-        return $payment;
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+            provider: $this->provider,
+            sessionReference: $parameters['reference'],
+            paymentReference: null,
+            checkoutSecret: null,
+            checkoutUrl: $paystack['data']['authorization_url'],
+            expires: $parameters['expires'],
+            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+        ));
     }
 
-    public function initializeProvider(array $parameters): mixed
+    public function verifyTransaction(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->post($this->baseUrl.'transaction/initialize', $parameters);
+        $response = $this->request('GET', "transaction/verify/$reference");
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        if ($response->failed()) {
-            throw new InitializationException($response->json('message'), $response->status());
-        }
-
-        return $response->json('data');
+        return $response['data'];
     }
 
-    public function verifyProvider(string $reference): mixed
+    public function listTransactions(
+        ?string $from = null,
+        ?string $to = null,
+        ?string $page = null,
+        ?string $status = null,
+        ?string $reference = null,
+        ?string $amount = null,
+        ?string $customer = null,
+    ): array|null {
+        $payload = array_filter([
+            'from' => $from,
+            'to' => $to,
+            'page' => $page,
+            'customer' => $customer,
+            'status' => $status,
+            'amount' => $amount,
+        ]);
+
+        $response = $this->request('GET', "transaction", $payload);
+
+        return [
+            'meta' => [
+                "total" => Arr::get($response, 'meta.total'),
+                "page" => Arr::get($response, 'meta.page'),
+                "page_count" => Arr::get($response, 'meta.pageCount'),
+            ],
+            'data' => collect($response['data'])
+                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->toArray(),
+        ];
+    }
+
+    public function buildTransactionData(array $data): PaymentTransactionData
     {
-        $response = $this->http()->acceptJson()->get($this->baseUrl."transaction/verify/$reference");
+        $date = Arr::get($data, 'transaction_date') ?? Arr::get($data, 'created_at');
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        if ($response->failed()) {
-            throw new VerificationException($response->json('message'), $response->json('status'));
-        }
-
-        return $response->json('data');
+        return new PaymentTransactionData(
+            email: $data['customer']['email'],
+            meta: $data['metadata'],
+            amount: ($data['amount'] / 100),
+            currency: $data['currency'],
+            reference: $data['reference'],
+            provider: $this->provider,
+            status: $data['status'],
+            date: Carbon::parse($date)->toDateTimeString(),
+        );
     }
 }

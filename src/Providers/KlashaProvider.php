@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentData;
+use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
@@ -14,7 +14,7 @@ class KlashaProvider extends AbstractProvider
 {
     public string $provider = 'klasha';
 
-    public function initializePayment(array $parameters = []): SessionData
+    public function initializeTransaction(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'KSA_'.Str::random(12);
 
@@ -29,16 +29,16 @@ class KlashaProvider extends AbstractProvider
         ));
     }
 
-    public function confirmPayment(string $paymentReference, ?SerializableClosure $closure): PaymentData|null
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure): PaymentTransactionData|null
     {
-        $provider = $this->verifyProvider($paymentReference);
+        $provider = $this->verifyTransaction($reference);
 
-        $payment = new PaymentData(
+        $payment = new PaymentTransactionData(
             email: $provider['customer']['email'],
             meta: $provider['customer'],
             amount: $provider['sourceAmount'],
             currency: $provider['sourceCurrency'],
-            reference: $paymentReference,
+            reference: $reference,
             provider: $this->provider,
             status: $provider['status'],
             date: Carbon::now()->toDateTimeString(),
@@ -76,7 +76,7 @@ class KlashaProvider extends AbstractProvider
         ];
     }
 
-    public function verifyProvider(string $reference): mixed
+    public function verifyTransaction(string $reference): mixed
     {
         $response = $this->http()->acceptJson()->post($this->baseUrl.'nucleus/tnx/merchant/status', [
             'tnxRef' => $reference,
