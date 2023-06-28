@@ -4,12 +4,11 @@ namespace Stephenjude\PaymentGateway\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
-use Stephenjude\PaymentGateway\Exceptions\InitializationException;
-use Stephenjude\PaymentGateway\Exceptions\VerificationException;
 
 class StripeProvider extends AbstractProvider
 {
@@ -28,9 +27,13 @@ class StripeProvider extends AbstractProvider
             'provider' => $this->provider,
         ]);
 
-        $stripe = $this->initializeProvider($parameters);
+        $stripe = $this->request(
+            method: 'POST',
+            path: 'v1/checkout/sessions',
+            payload: $this->prepareInitializationData($parameters)
+        );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['id'],
@@ -41,65 +44,17 @@ class StripeProvider extends AbstractProvider
         ));
     }
 
-    public function confirmTransaction(string $reference, SerializableClosure|null $closure): PaymentTransactionData|null
-    {
-        $provider = $this->verifyTransaction($reference);
-
-        $payment = new PaymentTransactionData(
-            email: Arr::get($provider['charges'], 'data.0.billing_details.email'),
-            meta: $provider['metadata'],
-            amount: ($provider['amount'] / 100),
-            currency: $provider['currency'],
-            reference: $reference,
-            provider: $this->provider,
-            status: $provider['status'],
-            date: null,
-        );
-
-        $this->executeClosure($closure, $payment);
-
-        return $payment;
-    }
-
-    public function initializeProvider(array $parameters): mixed
-    {
-        $response = $this->http()->asForm()->post(
-            $this->baseUrl.'v1/checkout/sessions',
-            $this->prepareInitializationData($parameters)
-        );
-
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        throw_if($response->failed(), new InitializationException($response->json('message')));
-
-        return $response->json();
-    }
-
     public function verifyTransaction(string $reference): mixed
     {
-        $checkoutSession = $this->http()
-            ->asForm()
-            ->get($this->baseUrl."v1/checkout/sessions/$reference");
+        $response = $this->request('GET', "v1/checkout/sessions/$reference");
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $checkoutSession);
+        $paymentIntent = $response['payment_intent'];
 
-        throw_if(
-            condition: $checkoutSession->failed(),
-            exception: new VerificationException($checkoutSession->json('error.message'))
-        );
+        $transaction = $this->request('POST', "v1/payment_intents/$paymentIntent");
 
-        $paymentIntent = $checkoutSession->json('payment_intent');
+        $transaction['reference'] = $reference;
 
-        $response = $this->http()->asForm()->post($this->baseUrl."v1/payment_intents/$paymentIntent");
-
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
-
-        throw_if(
-            condition: $response->failed(),
-            exception: new VerificationException($response->json('error.message'))
-        );
-
-        return $response->json();
+        return $transaction;
     }
 
     private function prepareInitializationData(array $parameters): array
@@ -124,5 +79,60 @@ class StripeProvider extends AbstractProvider
             'success_url' => $parameters['callback_url'],
             'cancel_url' => $parameters['callback_url'],
         ];
+    }
+
+    public function listTransactions(
+        ?string $from = null,
+        ?string $to = null,
+        ?string $page = null,
+        ?string $status = null,
+        ?string $reference = null,
+        ?string $amount = null,
+        ?string $customer = null,
+    ): array|null {
+        $payload = array_filter([
+            'customer'=> $customer,
+            'limit' => 100,
+            'created' => [
+                'gte' => $from,
+                'lte' => $to,
+            ],
+        ]);
+
+        $response = $this->request('GET', 'v1/charges', $payload);
+
+        return [
+            'meta' => [
+                'total' => count($response['data']),
+                'page' => null,
+                'page_count' => null,
+            ],
+            'data' => collect($response['data'])
+                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->toArray(),
+        ];
+    }
+
+    public function buildTransactionData(array $transaction): PaymentTransactionData
+    {
+        $email = Arr::get($transaction, 'billing_details.email')
+            ?? Arr::get($transaction, 'charges.data.0.billing_details.email');
+
+        $reference = Arr::get($transaction, 'reference')
+            ?? Arr::get($transaction, 'payment_intent')
+            ?? Arr::get($transaction, 'id');
+
+        $date = Arr::get($transaction, 'created');
+
+        return new PaymentTransactionData(
+            email: $email,
+            meta: $transaction['metadata'],
+            amount: ($transaction['amount'] / 100),
+            currency: $transaction['currency'],
+            reference: $reference,
+            provider: $this->provider,
+            status: $transaction['status'],
+            date: Date::createFromTimestamp($date),
+        );
     }
 }

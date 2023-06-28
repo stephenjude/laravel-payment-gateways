@@ -26,21 +26,25 @@ class Pay4meProvider extends AbstractProvider
          */
         $amount = Arr::get($parameters, 'amount') * 100;
 
-        $pay4me = $this->request(method: 'POST', path: 'api/transactions/initialize', payload: [
-            'email' => Arr::get($parameters, 'email'),
-            'amount' => $amount,
-            'currency' => Arr::get($parameters, 'currency'),
-            'reference' => Arr::get($parameters, 'reference'),
-            'channels' => $this->getChannels(),
-            'metadata' => Arr::get($parameters, 'meta'),
-            'callback_url' => $parameters['callback_url']
-                ?? route(config('payment-gateways.routes.callback.name'), [
-                    'reference' => $parameters['reference'],
-                    'provider' => $this->provider,
-                ]),
-        ]);
+        $pay4me = $this->request(
+            method: 'POST',
+            path: 'api/transactions/initialize',
+            payload: [
+                'email' => Arr::get($parameters, 'email'),
+                'amount' => $amount,
+                'currency' => Arr::get($parameters, 'currency'),
+                'reference' => Arr::get($parameters, 'reference'),
+                'channels' => $this->getChannels(),
+                'metadata' => Arr::get($parameters, 'meta'),
+                'callback_url' => $parameters['callback_url']
+                    ?? route(config('payment-gateways.routes.callback.name'), [
+                        'reference' => $parameters['reference'],
+                        'provider' => $this->provider,
+                    ]),
+            ]
+        );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
@@ -76,33 +80,32 @@ class Pay4meProvider extends AbstractProvider
             'amount' => $amount,
         ]);
 
-        $response = $this->request('GET', "api/transactions", $payload);
+        $response = $this->request('GET', 'api/transactions', $payload);
 
         return [
             'meta' => [
-                "total" => Arr::get($response, 'meta.total'),
-                "page" => Arr::get($response, 'meta.page'),
-                "page_count" => Arr::get($response, 'meta.pageCount'),
+                'total' => Arr::get($response, 'meta.total'),
+                'page' => Arr::get($response, 'meta.page'),
+                'page_count' => Arr::get($response, 'meta.pageCount'),
             ],
             'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
                 ->toArray(),
         ];
     }
 
-
-    public function buildTransactionData(array $data): PaymentTransactionData
+    public function buildTransactionData(array $transaction): PaymentTransactionData
     {
-        $date = Arr::get($data, 'paid_at') ?? Arr::get($data, 'created_at');
+        $date = Arr::get($transaction, 'paid_at') ?? Arr::get($transaction, 'created_at');
 
         return new PaymentTransactionData(
-            email: $data['customer']['email'],
-            meta: $data['metadata'],
-            amount: ($data['amount'] / 100),
-            currency: $data['currency'],
-            reference: $data['reference'],
+            email: $transaction['customer']['email'],
+            meta: $transaction['metadata'],
+            amount: ($transaction['amount'] / 100),
+            currency: $transaction['currency'],
+            reference: $transaction['reference'],
             provider: $this->provider,
-            status: $data['status'],
+            status: $transaction['status'],
             date: Carbon::parse($date)->toDateTimeString(),
         );
     }

@@ -23,7 +23,7 @@ class FlutterwaveProvider extends AbstractProvider
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
         $flutterwave = $this->request(
-            method: 'GET',
+            method: 'POST',
             path: 'v3/payments',
             payload: [
                 'amount' => Arr::get($parameters, 'amount'),
@@ -43,7 +43,7 @@ class FlutterwaveProvider extends AbstractProvider
             ]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
@@ -53,13 +53,6 @@ class FlutterwaveProvider extends AbstractProvider
             closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
         )
         );
-    }
-
-    public function initializeProvider(array $parameters): mixed
-    {
-        $response = $this->request('GET', 'v3/payments', $parameters);
-
-        return $response['data'];
     }
 
     public function verifyTransaction(string $reference): array
@@ -91,27 +84,27 @@ class FlutterwaveProvider extends AbstractProvider
 
         return [
             'meta' => [
-                "total" => Arr::get($response, 'meta.page_info.total'),
-                "page" => Arr::get($response, 'meta.page_info.current_page'),
-                "page_count" => Arr::get($response, 'meta.page_info.total_pages'),
+                'total' => Arr::get($response, 'meta.page_info.total'),
+                'page' => Arr::get($response, 'meta.page_info.current_page'),
+                'page_count' => Arr::get($response, 'meta.page_info.total_pages'),
             ],
             'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $data): PaymentTransactionData
+    public function buildTransactionData(array $transaction): PaymentTransactionData
     {
         return new PaymentTransactionData(
-            email: $data['customer']['email'],
-            meta: $data['meta'] ?? null,
-            amount: $data['amount'],
-            currency: $data['currency'],
-            reference: $data['reference'],
+            email: $transaction['customer']['email'],
+            meta: $transaction['meta'] ?? null,
+            amount: $transaction['amount'],
+            currency: $transaction['currency'],
+            reference: $transaction['reference'],
             provider: $this->provider,
-            status: $data['status'],
-            date: Carbon::parse($data['created_at'])->toDateTimeString(),
+            status: $transaction['status'],
+            date: Carbon::parse($transaction['created_at'])->toDateTimeString(),
         );
     }
 }

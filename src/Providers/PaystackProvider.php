@@ -45,7 +45,7 @@ class PaystackProvider extends AbstractProvider
             ]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
@@ -58,9 +58,9 @@ class PaystackProvider extends AbstractProvider
 
     public function verifyTransaction(string $reference): mixed
     {
-        $response = $this->request('GET', "transaction/verify/$reference");
+        $transaction = $this->request('GET', "transaction/verify/$reference");
 
-        return $response['data'];
+        return $transaction['data'];
     }
 
     public function listTransactions(
@@ -81,32 +81,32 @@ class PaystackProvider extends AbstractProvider
             'amount' => $amount,
         ]);
 
-        $response = $this->request('GET', "transaction", $payload);
+        $response = $this->request('GET', 'transaction', $payload);
 
         return [
             'meta' => [
-                "total" => Arr::get($response, 'meta.total'),
-                "page" => Arr::get($response, 'meta.page'),
-                "page_count" => Arr::get($response, 'meta.pageCount'),
+                'total' => Arr::get($response, 'meta.total'),
+                'page' => Arr::get($response, 'meta.page'),
+                'page_count' => Arr::get($response, 'meta.pageCount'),
             ],
             'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $data): PaymentTransactionData
+    public function buildTransactionData(array $transaction): PaymentTransactionData
     {
-        $date = Arr::get($data, 'transaction_date') ?? Arr::get($data, 'created_at');
+        $date = Arr::get($transaction, 'transaction_date') ?? Arr::get($transaction, 'created_at');
 
         return new PaymentTransactionData(
-            email: $data['customer']['email'],
-            meta: $data['metadata'],
-            amount: ($data['amount'] / 100),
-            currency: $data['currency'],
-            reference: $data['reference'],
+            email: $transaction['customer']['email'],
+            meta: $transaction['metadata'],
+            amount: ($transaction['amount'] / 100),
+            currency: $transaction['currency'],
+            reference: $transaction['reference'],
             provider: $this->provider,
-            status: $data['status'],
+            status: $transaction['status'],
             date: Carbon::parse($date)->toDateTimeString(),
         );
     }

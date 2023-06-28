@@ -7,7 +7,7 @@ use Spatie\LaravelData\Data;
 class PaymentTransactionData extends Data
 {
     public function __construct(
-        public string $email,
+        public ?string $email,
         public array|null $meta,
         public int|float $amount,
         public string $currency,

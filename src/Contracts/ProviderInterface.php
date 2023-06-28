@@ -33,5 +33,5 @@ interface ProviderInterface
         ?string $customer = null, // this could be email or id
     ): array|null;
 
-    public function buildTransactionData(array $data): PaymentTransactionData;
+    public function buildTransactionData(array $transaction): PaymentTransactionData;
 }
