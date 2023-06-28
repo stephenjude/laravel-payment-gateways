@@ -18,7 +18,7 @@ class SeerbitProvider extends AbstractProvider
 {
     public string $provider = 'seerbit';
 
-    public function http(): PendingRequest
+    public function getToken(): PendingRequest
     {
         return Http::withToken($this->getToken())->acceptJson();
     }
@@ -87,7 +87,7 @@ class SeerbitProvider extends AbstractProvider
     public function initializeProvider(array $parameters): mixed
     {
         try {
-            return $this->http()
+            return $this->getToken()
                 ->post($this->baseUrl.'api/v2/payments', $parameters)
                 ->json('data');
         } catch (\Exception $exception) {
@@ -98,7 +98,7 @@ class SeerbitProvider extends AbstractProvider
     public function verifyTransaction(string $reference): mixed
     {
         try {
-            return $this->http()
+            return $this->getToken()
                 ->get($this->baseUrl."api/v2/payments/query/$reference")
                 ->json('data');
         } catch (\Exception $exception) {

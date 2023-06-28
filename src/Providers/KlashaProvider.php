@@ -78,7 +78,7 @@ class KlashaProvider extends AbstractProvider
 
     public function verifyTransaction(string $reference): mixed
     {
-        $response = $this->http()->acceptJson()->post($this->baseUrl.'nucleus/tnx/merchant/status', [
+        $response = $this->getToken()->acceptJson()->post($this->baseUrl.'nucleus/tnx/merchant/status', [
             'tnxRef' => $reference,
         ]);
 

@@ -33,7 +33,7 @@ class StripeProvider extends AbstractProvider
             payload: $this->prepareInitializationData($parameters)
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['id'],
@@ -91,7 +91,7 @@ class StripeProvider extends AbstractProvider
         ?string $customer = null,
     ): array|null {
         $payload = array_filter([
-            'customer'=> $customer,
+            'customer' => $customer,
             'limit' => 100,
             'created' => [
                 'gte' => $from,
@@ -108,7 +108,7 @@ class StripeProvider extends AbstractProvider
                 'page_count' => null,
             ],
             'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
                 ->toArray(),
         ];
     }

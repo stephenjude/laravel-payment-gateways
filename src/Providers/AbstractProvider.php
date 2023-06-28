@@ -96,11 +96,6 @@ abstract class AbstractProvider implements ProviderInterface
         return Cache::get($key);
     }
 
-    public function http(): PendingRequest
-    {
-        return Http::withToken($this->secretKey)->acceptJson();
-    }
-
     public function executeClosure(?SerializableClosure $closure, PaymentTransactionData $paymentData): void
     {
         if ($closure) {
