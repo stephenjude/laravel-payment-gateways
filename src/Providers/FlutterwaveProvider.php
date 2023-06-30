@@ -7,14 +7,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class FlutterwaveProvider extends AbstractProvider
 {
     public string $provider = 'flutterwave';
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'FLW_'.Str::random(12);
 

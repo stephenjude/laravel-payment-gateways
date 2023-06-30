@@ -67,7 +67,7 @@ use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 $provider = PaymentGateway::make('paystack')
 
-$paymentSession = $provider->initializeTransaction([
+$paymentSession = $provider->initializeCheckout([
     'currency' => 'NGN', // required
     'amount' => 100, // required
     'email' => 'customer@email.com', // required

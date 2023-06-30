@@ -25,7 +25,7 @@ class SeerbitProvider extends AbstractProvider
     private function getToken()
     {
         $payload = [
-            'key' => config('payment-gateways.providers.seerbit.secret').'.'.$this->publicKey
+            'key' => config('payment-gateways.providers.seerbit.secret').'.'.$this->publicKey,
         ];
 
         return Http::acceptJson()
@@ -33,7 +33,7 @@ class SeerbitProvider extends AbstractProvider
             ->json('data.EncryptedSecKey.encryptedKey');
     }
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'SEBT_'.Str::random(12);
 
@@ -43,7 +43,7 @@ class SeerbitProvider extends AbstractProvider
 
         $seerbit = $this->request(
             method: 'POST',
-            path: "api/v2/payments",
+            path: 'api/v2/payments',
             payload: [
                 'publicKey' => $this->publicKey,
                 'email' => Arr::get($parameters, 'email'),
@@ -62,7 +62,7 @@ class SeerbitProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => new SessionData(
+            callback: fn () => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: null,
@@ -92,29 +92,7 @@ class SeerbitProvider extends AbstractProvider
         ?string $amount = null,
         ?string $customer = null,
     ): array|null {
-        $queryParameters = array_filter([
-            'from' => $from,
-            'to' => $to,
-            'page' => $page,
-            'customer_email' => $customer,
-            'status' => $status,
-            'tx_ref' => $reference,
-        ]);
-
-        $response = $this->request('GET', 'api/v2/payments', $queryParameters);
-
-        dd($response);
-
-        return [
-            'meta' => [
-                'total' => Arr::get($response, 'meta.page_info.total'),
-                'page' => Arr::get($response, 'meta.page_info.current_page'),
-                'page_count' => Arr::get($response, 'meta.page_info.total_pages'),
-            ],
-            'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->transactionDTO($transaction))
-                ->toArray(),
-        ];
+        throw new \Exception("This provider [$this->provider] does not support list transactions");
     }
 
     public function transactionDTO(array $transaction): TransactionData

@@ -23,12 +23,12 @@ class CompletePaymentController extends Controller
         try {
             $paymentProvider = PaymentGateway::make($provider);
 
-            $sessionData = $paymentProvider->getInitializedPayment($reference);
+            $sessionData = $paymentProvider->getCheckout($reference);
 
             if (is_null($sessionData)) {
                 return redirect()->route(
-                    config('payment-gateways.routes.error.name'),
-                    ['message' => 'Your payment session has expired.']
+                    route: config('payment-gateways.routes.error.name'),
+                    parameters: ['message' => 'Your payment session has expired.']
                 );
             }
 
@@ -44,9 +44,10 @@ class CompletePaymentController extends Controller
             $payment = $paymentProvider->confirmTransaction($paymentReference, $sessionData->closure);
 
             if ($customSuccessRoute = config('payment-gateways.routes.custom.success.name')) {
-                return redirect()->route($customSuccessRoute, [
-                    'reference' => $paymentReference,
-                ]);
+                return redirect()->route(
+                    route: $customSuccessRoute,
+                    parameters: ['reference' => $paymentReference,]
+                );
             }
 
             return view('payment-gateways::status', [
@@ -56,8 +57,8 @@ class CompletePaymentController extends Controller
         } catch (Exception $exception) {
             logger($exception->getMessage(), $exception->getTrace());
 
-            if ($customeFailedRoute = config('payment-gateways.routes.custom.failed.name')) {
-                return redirect()->route($customeFailedRoute, [
+            if ($customFailedRoute = config('payment-gateways.routes.custom.failed.name')) {
+                return redirect()->route($customFailedRoute, [
                     'reference' => $paymentReference,
                     'message' => $exception->getMessage(),
                 ]);

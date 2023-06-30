@@ -3,16 +3,16 @@
 namespace Stephenjude\PaymentGateway\Contracts;
 
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 interface ProviderInterface
 {
-    public function initializeTransaction(array $parameters = []): SessionData;
+    public function initializeCheckout(array $parameters = []): SessionData;
 
-    public function getInitializedPayment(string $sessionReference): SessionData|null;
+    public function getCheckout(string $sessionReference): SessionData|null;
 
-    public function deinitializePayment(string $sessionReference): void;
+    public function destroyCheckout(string $sessionReference): void;
 
     public function setChannels(array $channels): self;
 
@@ -22,6 +22,8 @@ interface ProviderInterface
         string $reference,
         SerializableClosure|null $closure,
     ): TransactionData|null;
+
+    public function findTransaction(string $reference): TransactionData;
 
     public function listTransactions(
         ?string $from = null,

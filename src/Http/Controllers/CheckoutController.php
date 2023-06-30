@@ -21,7 +21,7 @@ class CheckoutController extends Controller
         try {
             $paymentProvider = PaymentGateway::make($provider);
 
-            $sessionData = $paymentProvider->getInitializedPayment($reference);
+            $sessionData = $paymentProvider->getCheckout($reference);
 
             if (is_null($sessionData)) {
                 return redirect()->route(

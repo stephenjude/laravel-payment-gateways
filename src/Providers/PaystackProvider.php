@@ -7,14 +7,14 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class PaystackProvider extends AbstractProvider
 {
     public string $provider = 'paystack';
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'PTK_'.Str::random(12);
 

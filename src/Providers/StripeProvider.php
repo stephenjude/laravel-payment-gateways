@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class StripeProvider extends AbstractProvider
 {
     public string $provider = 'stripe';
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'STP_'.Str::random(12);
 

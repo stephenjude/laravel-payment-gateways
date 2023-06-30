@@ -6,14 +6,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class Pay4meProvider extends AbstractProvider
 {
     public string $provider = 'pay4me';
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'P4M'.now()->timestamp;
 

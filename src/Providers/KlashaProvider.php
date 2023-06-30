@@ -2,6 +2,7 @@
 
 namespace Stephenjude\PaymentGateway\Providers;
 
+use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class KlashaProvider extends AbstractProvider
 {
     public string $provider = 'klasha';
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'KSA_'.Str::random(12);
 
@@ -48,7 +49,7 @@ class KlashaProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => new SessionData(...$sessionData)
+            callback: fn () => new SessionData(...$sessionData)
         );
     }
 
@@ -74,7 +75,7 @@ class KlashaProvider extends AbstractProvider
         ?string $amount = null,
         ?string $customer = null,
     ): array|null {
-        throw new \Exception("This provider [$this->provider] does not support list transactions");
+        throw new Exception("This provider [$this->provider] does not support list transactions");
     }
 
     public function transactionDTO(array $transaction): TransactionData

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class MonnifyProvider extends AbstractProvider
 {
@@ -32,7 +32,7 @@ class MonnifyProvider extends AbstractProvider
             ->json('responseBody.accessToken');
     }
 
-    public function initializeTransaction(array $parameters = []): SessionData
+    public function initializeCheckout(array $parameters = []): SessionData
     {
         $parameters['reference'] = 'MNFY_'.Str::random(12);
 
@@ -62,7 +62,7 @@ class MonnifyProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => new SessionData(
+            callback: fn () => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: $monnify['responseBody']['transactionReference'],
@@ -91,13 +91,13 @@ class MonnifyProvider extends AbstractProvider
         ?string $customer = null,
     ): array {
         $payload = array_filter([
-            "page" => $page,
-            "paymentReference" => $reference,
-            "amount" => $amount,
-            "customerEmail" => $customer,
-            "paymentStatus" => $status,
-            "from" => $from,
-            "to" => $to,
+            'page' => $page,
+            'paymentReference' => $reference,
+            'amount' => $amount,
+            'customerEmail' => $customer,
+            'paymentStatus' => $status,
+            'from' => $from,
+            'to' => $to,
         ]);
 
         $response = $this->request('GET', 'api/v1/transactions/search', $payload);
@@ -109,7 +109,7 @@ class MonnifyProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'responseBody.pageable.totalPages'),
             ],
             'data' => collect(Arr::get($response, 'responseBody.content'))
-                ->map(fn($transaction) => $this->transactionDTO($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }

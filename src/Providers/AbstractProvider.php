@@ -3,14 +3,13 @@
 namespace Stephenjude\PaymentGateway\Providers;
 
 use Exception;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
-use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -57,7 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
             default => $http->get($path, $payload),
         };
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+        $this->logResponse($this->provider, $response);
 
         if ($response->failed()) {
             throw new Exception($response->reason());
@@ -66,14 +65,14 @@ abstract class AbstractProvider implements ProviderInterface
         return $response->json();
     }
 
-    public function getInitializedPayment(string $sessionReference): SessionData|null
+    public function getCheckout(string $sessionReference): SessionData|null
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 
         return Cache::get($sessionCacheKey);
     }
 
-    public function deinitializePayment(string $sessionReference): void
+    public function destroyCheckout(string $sessionReference): void
     {
         $sessionCacheKey = config('payment-gateways.cache.session.key').$sessionReference;
 
@@ -96,27 +95,18 @@ abstract class AbstractProvider implements ProviderInterface
         return Cache::get($key);
     }
 
-    public function executeClosure(?SerializableClosure $closure, TransactionData $paymentData): void
-    {
-        if ($closure) {
-            $closure = $closure->getClosure();
-
-            $closure($paymentData);
-        }
-    }
-
     public function confirmTransaction(string $reference, ?SerializableClosure $closure): TransactionData|null
     {
         $transaction = $this->findTransaction($reference);
 
-        $this->executeClosure($closure, $transaction);
+        if ($closure = $closure?->getClosure()) {
+            $closure($transaction);
+        }
 
         return $transaction;
     }
 
-    abstract public function findTransaction(string $reference): TransactionData;
-
-    protected function logResponseIfEnabledDebugMode(string $provider, Response $response): void
+    protected function logResponse(string $provider, Response $response): void
     {
         if (! config('payment-gateways.debug_mode')) {
             return;
