@@ -18,8 +18,6 @@ class CompletePaymentController extends Controller
 
     public function __invoke(Request $request, string $provider, string $reference)
     {
-        $key = config('payment-gateways.cache.session.key').$reference;
-
         try {
             $paymentProvider = PaymentGateway::make($provider);
 

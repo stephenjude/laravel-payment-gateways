@@ -10,18 +10,11 @@ interface ProviderInterface
 {
     public function initializeCheckout(array $parameters = []): SessionData;
 
-    public function getCheckout(string $sessionReference): SessionData|null;
+    public function getCheckout(string $sessionReference): ?SessionData;
 
     public function destroyCheckout(string $sessionReference): void;
 
-    public function setChannels(array $channels): self;
-
-    public function getChannels(): array|null;
-
-    public function confirmTransaction(
-        string $reference,
-        SerializableClosure|null $closure,
-    ): TransactionData|null;
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure): ?TransactionData;
 
     public function findTransaction(string $reference): TransactionData;
 

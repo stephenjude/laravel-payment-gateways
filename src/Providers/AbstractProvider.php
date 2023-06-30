@@ -79,15 +79,6 @@ abstract class AbstractProvider implements ProviderInterface
         Cache::forget($sessionCacheKey);
     }
 
-    public function setReference(string $sessionReference, string $paymentReference): void
-    {
-        $key = config('payment-gateway.cache.payment.key').$sessionReference;
-
-        $expires = config('payment-gateway.cache.payment.expries');
-
-        Cache::remember($key, $expires, fn () => $paymentReference);
-    }
-
     public function getReference(string $sessionReference): string|null
     {
         $key = config('payment-gateway.cache.payment.key').$sessionReference;
