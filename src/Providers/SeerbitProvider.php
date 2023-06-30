@@ -56,13 +56,13 @@ class SeerbitProvider extends AbstractProvider
                         'reference' => $parameters['reference'],
                         'provider' => $this->provider,
                     ]),
-            ]
+            ],
         );
 
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn () => new SessionData(
+            callback: fn() => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: null,
@@ -77,6 +77,10 @@ class SeerbitProvider extends AbstractProvider
     public function findTransaction(string $reference): TransactionData
     {
         $transaction = $this->request('GET', "api/v2/payments/query/$reference");
+
+        if ($transaction['error']) {
+            throw new \Exception($transaction['message']);
+        }
 
         $transaction['data']['reference'] = $reference;
 

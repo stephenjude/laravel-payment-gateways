@@ -10,6 +10,11 @@ interface ProviderInterface
 {
     public function initializeCheckout(array $parameters = []): SessionData;
 
+    /**
+     * @deprecated use initializeCheckout() method
+     */
+    public function initializePayment(array $parameters = []): SessionData;
+
     public function getCheckout(string $sessionReference): ?SessionData;
 
     public function destroyCheckout(string $sessionReference): void;

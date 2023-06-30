@@ -49,7 +49,7 @@ class KlashaProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn () => new SessionData(...$sessionData)
+            callback: fn() => new SessionData(...$sessionData)
         );
     }
 
@@ -60,6 +60,10 @@ class KlashaProvider extends AbstractProvider
             path: 'nucleus/tnx/merchant/status',
             payload: ['tnxRef' => $reference]
         );
+
+        if (!isset($transaction['data'])) {
+            throw new \Exception('Transaction not found');
+        }
 
         $transaction['data']['reference'] = $reference;
 

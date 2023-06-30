@@ -30,10 +30,11 @@ class StripeProvider extends AbstractProvider
         $stripe = $this->request(
             method: 'POST',
             path: 'v1/checkout/sessions',
-            payload: $this->prepareInitializationData($parameters)
+            payload: $this->prepareInitializationData($parameters),
+            options: ['as_form' => true]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['id'],
@@ -46,11 +47,19 @@ class StripeProvider extends AbstractProvider
 
     public function findTransaction(string $reference): TransactionData
     {
-        $response = $this->request('GET', "v1/checkout/sessions/$reference");
+        $response = $this->request(
+            method: 'GET',
+            path: "v1/checkout/sessions/$reference",
+            options: ['as_form' => true]
+        );
 
         $paymentIntent = $response['payment_intent'];
 
-        $transaction = $this->request('POST', "v1/payment_intents/$paymentIntent");
+        $transaction = $this->request(
+            method: 'POST',
+            path: "v1/payment_intents/$paymentIntent",
+            options: ['as_form' => true]
+        );
 
         $transaction['reference'] = $reference;
 
@@ -99,7 +108,7 @@ class StripeProvider extends AbstractProvider
             ],
         ]);
 
-        $response = $this->request('GET', 'v1/charges', $payload);
+        $response = $this->request('GET', 'v1/charges', $payload, ['as_form' => true]);
 
         return [
             'meta' => [
@@ -108,7 +117,7 @@ class StripeProvider extends AbstractProvider
                 'page_count' => null,
             ],
             'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->transactionDTO($transaction))
+                ->map(fn($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
