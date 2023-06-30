@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 class FlutterwaveProvider extends AbstractProvider
@@ -43,26 +43,23 @@ class FlutterwaveProvider extends AbstractProvider
             ]
         );
 
-        return Cache::remember(
-            $parameters['session_cache_key'],
-            $parameters['expires'],
-            fn () => new SessionData(
-                provider: $this->provider,
-                sessionReference: $parameters['reference'],
-                paymentReference: null,
-                checkoutSecret: null,
-                checkoutUrl: $flutterwave['data']['link'],
-                expires: $parameters['expires'],
-                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
-            )
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+            provider: $this->provider,
+            sessionReference: $parameters['reference'],
+            paymentReference: null,
+            checkoutSecret: null,
+            checkoutUrl: $flutterwave['data']['link'],
+            expires: $parameters['expires'],
+            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+        )
         );
     }
 
-    public function verifyTransaction(string $reference): array
+    public function findTransaction(string $reference): TransactionData
     {
         $response = $this->request('GET', "v3/transactions/$reference/verify");
 
-        return $response['data'];
+        return $this->transactionDTO($response['data']);
     }
 
     public function listTransactions(
@@ -92,14 +89,14 @@ class FlutterwaveProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'meta.page_info.total_pages'),
             ],
             'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $transaction): PaymentTransactionData
+    public function transactionDTO(array $transaction): TransactionData
     {
-        return new PaymentTransactionData(
+        return new TransactionData(
             email: $transaction['customer']['email'],
             meta: $transaction['meta'] ?? null,
             amount: $transaction['amount'],

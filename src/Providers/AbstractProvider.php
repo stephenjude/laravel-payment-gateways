@@ -3,12 +3,13 @@
 namespace Stephenjude\PaymentGateway\Providers;
 
 use Exception;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 abstract class AbstractProvider implements ProviderInterface
@@ -95,7 +96,7 @@ abstract class AbstractProvider implements ProviderInterface
         return Cache::get($key);
     }
 
-    public function executeClosure(?SerializableClosure $closure, PaymentTransactionData $paymentData): void
+    public function executeClosure(?SerializableClosure $closure, TransactionData $paymentData): void
     {
         if ($closure) {
             $closure = $closure->getClosure();
@@ -104,18 +105,16 @@ abstract class AbstractProvider implements ProviderInterface
         }
     }
 
-    public function confirmTransaction(string $reference, ?SerializableClosure $closure): PaymentTransactionData|null
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure): TransactionData|null
     {
-        $transaction = $this->verifyTransaction($reference);
-
-        $transaction = $this->buildTransactionData($transaction);
+        $transaction = $this->findTransaction($reference);
 
         $this->executeClosure($closure, $transaction);
 
         return $transaction;
     }
 
-    abstract public function verifyTransaction(string $reference): mixed;
+    abstract public function findTransaction(string $reference): TransactionData;
 
     protected function logResponseIfEnabledDebugMode(string $provider, Response $response): void
     {

@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 class PaystackProvider extends AbstractProvider
@@ -56,11 +56,11 @@ class PaystackProvider extends AbstractProvider
         ));
     }
 
-    public function verifyTransaction(string $reference): mixed
+    public function findTransaction(string $reference): TransactionData
     {
         $transaction = $this->request('GET', "transaction/verify/$reference");
 
-        return $transaction['data'];
+        return $this->transactionDTO($transaction['data']);
     }
 
     public function listTransactions(
@@ -90,16 +90,16 @@ class PaystackProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'meta.pageCount'),
             ],
             'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $transaction): PaymentTransactionData
+    public function transactionDTO(array $transaction): TransactionData
     {
         $date = Arr::get($transaction, 'transaction_date') ?? Arr::get($transaction, 'created_at');
 
-        return new PaymentTransactionData(
+        return new TransactionData(
             email: $transaction['customer']['email'],
             meta: $transaction['metadata'],
             amount: ($transaction['amount'] / 100),

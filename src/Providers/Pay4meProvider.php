@@ -6,7 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 class Pay4meProvider extends AbstractProvider
@@ -55,11 +55,11 @@ class Pay4meProvider extends AbstractProvider
         ));
     }
 
-    public function verifyTransaction(string $reference): array
+    public function findTransaction(string $reference): TransactionData
     {
         $response = $this->request('GET', $this->baseUrl."api/transactions/verify/$reference");
 
-        return $response['data'];
+        return $this->transactionDTO($response['data']);
     }
 
     public function listTransactions(
@@ -89,16 +89,16 @@ class Pay4meProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'meta.pageCount'),
             ],
             'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $transaction): PaymentTransactionData
+    public function transactionDTO(array $transaction): TransactionData
     {
         $date = Arr::get($transaction, 'paid_at') ?? Arr::get($transaction, 'created_at');
 
-        return new PaymentTransactionData(
+        return new TransactionData(
             email: $transaction['customer']['email'],
             meta: $transaction['metadata'],
             amount: ($transaction['amount'] / 100),

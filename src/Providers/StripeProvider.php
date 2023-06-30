@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 class StripeProvider extends AbstractProvider
@@ -44,7 +44,7 @@ class StripeProvider extends AbstractProvider
         ));
     }
 
-    public function verifyTransaction(string $reference): mixed
+    public function findTransaction(string $reference): TransactionData
     {
         $response = $this->request('GET', "v1/checkout/sessions/$reference");
 
@@ -54,7 +54,7 @@ class StripeProvider extends AbstractProvider
 
         $transaction['reference'] = $reference;
 
-        return $transaction;
+        return $this->transactionDTO($transaction);
     }
 
     private function prepareInitializationData(array $parameters): array
@@ -108,12 +108,12 @@ class StripeProvider extends AbstractProvider
                 'page_count' => null,
             ],
             'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $transaction): PaymentTransactionData
+    public function transactionDTO(array $transaction): TransactionData
     {
         $email = Arr::get($transaction, 'billing_details.email')
             ?? Arr::get($transaction, 'charges.data.0.billing_details.email');
@@ -124,7 +124,7 @@ class StripeProvider extends AbstractProvider
 
         $date = Arr::get($transaction, 'created');
 
-        return new PaymentTransactionData(
+        return new TransactionData(
             email: $email,
             meta: $transaction['metadata'],
             amount: ($transaction['amount'] / 100),

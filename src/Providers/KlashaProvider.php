@@ -6,9 +6,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
-use Stephenjude\PaymentGateway\Exceptions\VerificationException;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
 class KlashaProvider extends AbstractProvider
 {
@@ -22,36 +21,7 @@ class KlashaProvider extends AbstractProvider
 
         $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
 
-        $sessionData = $this->initializeProvider($parameters);
-
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
-            ...$sessionData
-        ));
-    }
-
-    public function confirmTransaction(string $reference, ?SerializableClosure $closure): PaymentTransactionData|null
-    {
-        $provider = $this->verifyTransaction($reference);
-
-        $payment = new PaymentTransactionData(
-            email: $provider['customer']['email'],
-            meta: $provider['customer'],
-            amount: $provider['sourceAmount'],
-            currency: $provider['sourceCurrency'],
-            reference: $reference,
-            provider: $this->provider,
-            status: $provider['status'],
-            date: Carbon::now()->toDateTimeString(),
-        );
-
-        $this->executeClosure($closure, $payment);
-
-        return $payment;
-    }
-
-    public function initializeProvider(array $parameters): mixed
-    {
-        return [
+        $sessionData = [
             'provider' => $this->provider,
             'sessionReference' => $parameters['reference'],
             'paymentReference' => $parameters['reference'],
@@ -74,20 +44,50 @@ class KlashaProvider extends AbstractProvider
                 ]),
             ],
         ];
+
+        return Cache::remember(
+            key: $parameters['session_cache_key'],
+            ttl: $parameters['expires'],
+            callback: fn() => new SessionData(...$sessionData)
+        );
     }
 
-    public function verifyTransaction(string $reference): mixed
+    public function findTransaction(string $reference): TransactionData
     {
-        $response = $this->getToken()->acceptJson()->post($this->baseUrl.'nucleus/tnx/merchant/status', [
-            'tnxRef' => $reference,
-        ]);
+        $transaction = $this->request(
+            method: 'POST',
+            path: 'nucleus/tnx/merchant/status',
+            payload: ['tnxRef' => $reference]
+        );
 
-        $this->logResponseIfEnabledDebugMode($this->provider, $response);
+        $transaction['data']['reference'] = $reference;
 
-        if ($response->failed()) {
-            throw new VerificationException('Payment verification was not successful.', $response->status());
-        }
+        return $this->transactionDTO($transaction['data']);
+    }
 
-        return $response->json();
+    public function listTransactions(
+        ?string $from = null,
+        ?string $to = null,
+        ?string $page = null,
+        ?string $status = null,
+        ?string $reference = null,
+        ?string $amount = null,
+        ?string $customer = null,
+    ): array|null {
+        throw new \Exception("This provider [$this->provider] does not support list transactions");
+    }
+
+    public function transactionDTO(array $transaction): TransactionData
+    {
+        return new TransactionData(
+            email: $transaction['customer']['email'],
+            meta: $transaction['customer'],
+            amount: $transaction['sourceAmount'],
+            currency: $transaction['sourceCurrency'],
+            reference: $transaction['reference'],
+            provider: $this->provider,
+            status: $transaction['status'],
+            date: Carbon::now()->toDateTimeString(),
+        );
     }
 }

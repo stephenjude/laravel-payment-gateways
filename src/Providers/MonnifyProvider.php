@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Laravel\SerializableClosure\SerializableClosure;
-use Stephenjude\PaymentGateway\DataObjects\PaymentTransactionData;
+use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 
 class MonnifyProvider extends AbstractProvider
@@ -62,7 +62,7 @@ class MonnifyProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn () => new SessionData(
+            callback: fn() => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: $monnify['responseBody']['transactionReference'],
@@ -74,11 +74,11 @@ class MonnifyProvider extends AbstractProvider
         );
     }
 
-    public function verifyTransaction(string $reference): mixed
+    public function findTransaction(string $reference): TransactionData
     {
         $response = $this->request('GET', "api/v1/transactions/$reference");
 
-        return $response['responseBody'];
+        return $this->transactionDTO($response['responseBody']);
     }
 
     public function listTransactions(
@@ -90,7 +90,7 @@ class MonnifyProvider extends AbstractProvider
         ?string $amount = null,
         ?string $customer = null,
     ): array {
-        $payload = [
+        $payload = array_filter([
             "page" => $page,
             "paymentReference" => $reference,
             "amount" => $amount,
@@ -98,7 +98,7 @@ class MonnifyProvider extends AbstractProvider
             "paymentStatus" => $status,
             "from" => $from,
             "to" => $to,
-        ];
+        ]);
 
         $response = $this->request('GET', 'api/v1/transactions/search', $payload);
 
@@ -109,14 +109,14 @@ class MonnifyProvider extends AbstractProvider
                 'page_count' => Arr::get($response, 'responseBody.pageable.totalPages'),
             ],
             'data' => collect(Arr::get($response, 'responseBody.content'))
-                ->map(fn ($transaction) => $this->buildTransactionData($transaction))
+                ->map(fn($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }
 
-    public function buildTransactionData(array $transaction): PaymentTransactionData
+    public function transactionDTO(array $transaction): TransactionData
     {
-        return new PaymentTransactionData(
+        return new TransactionData(
             email: $transaction['customerDTO']['email'],
             meta: $transaction['metaData'],
             amount: $transaction['amount'],
