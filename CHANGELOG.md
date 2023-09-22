@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.1.1 - 2023-09-22
+
+- Added metadata to Monnify payment initialization by @Official-David
+
 ## 2.1.0 - 2023-09-22
 
 - Added custom routes for successful and failed payments.
