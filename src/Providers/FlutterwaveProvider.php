@@ -43,15 +43,18 @@ class FlutterwaveProvider extends AbstractProvider
             ]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
-            provider: $this->provider,
-            sessionReference: $parameters['reference'],
-            paymentReference: null,
-            checkoutSecret: null,
-            checkoutUrl: $flutterwave['data']['link'],
-            expires: $parameters['expires'],
-            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
-        )
+        return Cache::remember(
+            $parameters['session_cache_key'],
+            $parameters['expires'],
+            fn () => new SessionData(
+                provider: $this->provider,
+                sessionReference: $parameters['reference'],
+                paymentReference: null,
+                checkoutSecret: null,
+                checkoutUrl: $flutterwave['data']['link'],
+                expires: $parameters['expires'],
+                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            )
         );
     }
 
