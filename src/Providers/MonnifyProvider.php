@@ -48,6 +48,7 @@ class MonnifyProvider extends AbstractProvider
                 'customerName' => Arr::get($parameters, 'meta.name', $email),
                 'amount' => Arr::get($parameters, 'amount'),
                 'currencyCode' => Arr::get($parameters, 'currency'),
+                'metaData' => Arr::get($parameters, 'meta'),
                 'contractCode' => config('payment-gateways.providers.monnify.contract_code'),
                 'paymentReference' => Arr::get($parameters, 'reference'),
                 'paymentMethods' => $this->getChannels(),
