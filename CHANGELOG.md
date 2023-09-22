@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.1.0 - 2023-09-22
+
+- Added custom routes for successful and failed payments.
+- Added transaction find & list method for Pay4Me, Paystack, Flutterwave, Monnify, and Stripe. SEERBIT & Klasha supports only find.
+- Fixed Monnify payment confirmation.
+- Map error response from supported providers.
+- Updated SEERBIT payment integration.
+- Update API URL usage.
+
 ## 2.0.8 - 2023-06-21
 
 - Fixed API URL path usage
