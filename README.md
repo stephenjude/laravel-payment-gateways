@@ -91,6 +91,29 @@ $paymentSession = $provider->initializeCheckout([
 $paymentSession->provider;
 $paymentSession->checkoutUrl;
 $paymentSession->expires;
+
+$provider->listTransactions();
+
+$transaction = $provider->findTransaction(REFERENCE);
+
+
+```
+### Accessing payament transaction data
+```php
+// List all transactions from this provider
+$provider->listTransactions();
+
+// Find a transaction by REFERENCE
+$transaction = $provider->findTransaction(REFERENCE);
+
+// Transaction data object
+$transaction->provider;
+$transaction->email;
+$transaction->amount;
+$transaction->currency;
+$transaction->reference;
+$transaction->status;
+$transaction->date;
 ```
 
 ### Pay4Me Setup
