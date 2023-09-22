@@ -34,7 +34,7 @@ class StripeProvider extends AbstractProvider
             options: ['as_form' => true]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['session_cache_key'],
             paymentReference: $stripe['id'],
@@ -117,7 +117,7 @@ class StripeProvider extends AbstractProvider
                 'page_count' => null,
             ],
             'data' => collect($response['data'])
-                ->map(fn($transaction) => $this->transactionDTO($transaction))
+                ->map(fn ($transaction) => $this->transactionDTO($transaction))
                 ->toArray(),
         ];
     }

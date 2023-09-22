@@ -44,7 +44,7 @@ class CompletePaymentController extends Controller
             if ($customSuccessRoute = config('payment-gateways.routes.custom.success.name')) {
                 return redirect()->route(
                     route: $customSuccessRoute,
-                    parameters: ['reference' => $paymentReference,]
+                    parameters: ['reference' => $paymentReference]
                 );
             }
 

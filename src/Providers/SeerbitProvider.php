@@ -62,7 +62,7 @@ class SeerbitProvider extends AbstractProvider
         return Cache::remember(
             key: $parameters['session_cache_key'],
             ttl: $parameters['expires'],
-            callback: fn() => new SessionData(
+            callback: fn () => new SessionData(
                 provider: $this->provider,
                 sessionReference: $parameters['reference'],
                 paymentReference: null,
