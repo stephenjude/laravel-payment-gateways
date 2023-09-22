@@ -91,22 +91,15 @@ $paymentSession = $provider->initializeCheckout([
 $paymentSession->provider;
 $paymentSession->checkoutUrl;
 $paymentSession->expires;
-
-$provider->listTransactions();
-
-$transaction = $provider->findTransaction(REFERENCE);
-
-
 ```
 ### Accessing payament transaction data
 ```php
-// List all transactions from this provider
-$provider->listTransactions();
 
-// Find a transaction by REFERENCE
-$transaction = $provider->findTransaction(REFERENCE);
+$provider = PaymentGateway::make('paystack'); 
 
-// Transaction data object
+$transactions = $provider->listTransactions(); // Returns array
+
+$transaction = $provider->findTransaction(REFERENCE); // Returns Stephenjude\PaymentGateway\DataObjects\TransactionData 
 $transaction->provider;
 $transaction->email;
 $transaction->amount;
