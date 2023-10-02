@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.1.2 - 2023-10-02
+
+- Changed transaction metadata to mixed type.
+
 ## 2.1.1 - 2023-09-22
 
 - Added metadata to Monnify payment initialization by @Official-David
