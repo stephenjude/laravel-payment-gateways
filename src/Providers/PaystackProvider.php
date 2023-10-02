@@ -60,8 +60,6 @@ class PaystackProvider extends AbstractProvider
     {
         $transaction = $this->request('GET', "transaction/verify/$reference");
 
-        dd($transaction);
-
         return $this->transactionDTO($transaction['data']);
     }
 

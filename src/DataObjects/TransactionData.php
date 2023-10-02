@@ -8,7 +8,7 @@ class TransactionData extends Data
 {
     public function __construct(
         public ?string $email,
-        public mixed|null $meta,
+        public mixed $meta,
         public int|float $amount,
         public string $currency,
         public string $reference,
