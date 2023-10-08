@@ -1,4 +1,4 @@
-# Laravel Payment Gateways (for APIs)
+# Laravel Payment Gateways
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stephenjude/laravel-payment-gateways.svg?style=flat-square)](https://packagist.org/packages/stephenjude/laravel-payment-gateways)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/stephenjude/laravel-payment-gateways/run-tests?label=tests)](https://github.com/stephenjude/laravel-payment-gateways/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -9,13 +9,13 @@ A simple Laravel implementation for all payment providers. This package supports
 Paystack, Monnify, Pay4Me Pay, Seerbit Flutterwave, Klasha, and Stripe.
 
 ## Use Case
-Have you had to implement limited SDKs for accepting payments on your mobile app. 
+Have you had to implement limited SDKs for accepting payments on your mobile app? 
 That's the problem this package solved.
 
-With this package you can generate a payment link and 
-return it to your mobile app API call and the payment can be completed on the inapp browser.
+With this package, you can generate a payment link and 
+return it to your mobile app API call and the payment can be completed on the in-app browser.
 
-When the customer completes their payment, this package verifies the payment and execute the code defined inside your 
+When the customer completes their payment, this package verifies the payment and executes the code defined inside your 
 custom closure. 
 
 The closure should look like this:
@@ -34,11 +34,11 @@ function (TransactionData $payment){
 }
 ```
 
-If you are using this package on the web this closure is the place where you can return a redirect after updating the customers order or sent notification.
+If you are using this package on the web this closure is the place where you can return a redirect after updating the customer order or sending a notification.
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via Composer:
 
 ```bash
 composer require stephenjude/laravel-payment-gateways
@@ -75,7 +75,7 @@ $paymentSession = $provider->initializeCheckout([
     'closure' => function (TransactionData $payment){
         /* 
          * Payment verification happens immediately after the customer makes payment. 
-         * The payment data gotten from the verification will be injected into this closure.
+         * The payment data obtained from the verification will be injected into this closure.
          */
         logger('payment details', [
            'currency' => $payment->currency, 
@@ -92,7 +92,7 @@ $paymentSession->provider;
 $paymentSession->checkoutUrl;
 $paymentSession->expires;
 ```
-### Accessing payament transaction data
+### Accessing payment transaction data
 ```php
 
 $provider = PaymentGateway::make('paystack'); 
