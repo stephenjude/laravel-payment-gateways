@@ -22,7 +22,7 @@ class TransactionData extends Data
     {
         // Paystack: success; Flutterwave: successful; Stripe: succeeded;
         return match (strtolower($this->status)) {
-            'success', 'succeeded', 'successful','paid', 'approved' => true,
+            'success', 'succeeded', 'successful', 'paid', 'approved', 'completed' => true,
             default => false
         };
     }
@@ -40,7 +40,7 @@ class TransactionData extends Data
     {
         // Paystack: failed; Flutterwave: failed; Stripe: failed;
         return match (strtolower($this->status)) {
-            'failed','expired' => true,
+            'failed', 'expired' => true,
             default => false
         };
     }

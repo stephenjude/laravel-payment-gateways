@@ -10,13 +10,13 @@ use Laravel\SerializableClosure\SerializableClosure;
 use Stephenjude\PaymentGateway\DataObjects\SessionData;
 use Stephenjude\PaymentGateway\DataObjects\TransactionData;
 
-class PaystackProvider extends AbstractProvider
+class PawapayProvider extends AbstractProvider
 {
-    public string $provider = 'paystack';
+    public string $provider = 'pawapay';
 
     public function initializeCheckout(array $parameters = []): SessionData
     {
-        $parameters['reference'] = 'PTK_'.Str::random(12);
+        $parameters['reference'] = Str::uuid();
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
@@ -25,42 +25,41 @@ class PaystackProvider extends AbstractProvider
         /*
         * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
         */
-        $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
+        $amount = (int)ceil(Arr::get($parameters, 'amount'));
 
-        $paystack = $this->request(
+        $pawapay = $this->request(
             method: 'POST',
-            path: 'transaction/initialize',
+            path: 'v1/widget/sessions',
             payload: [
-                'email' => Arr::get($parameters, 'email'),
-                'amount' => $amount,
-                'currency' => Arr::get($parameters, 'currency'),
-                'reference' => Arr::get($parameters, 'reference'),
-                'channels' => $this->getChannels(),
-                'metadata' => Arr::get($parameters, 'meta'),
-                'callback_url' => $parameters['callback_url']
-                    ?? route(config('payment-gateways.routes.callback.name'), [
+                'depositId' => Arr::get($parameters, 'reference'),
+                'amount' => "$amount", // Pawapay accepts amount as string
+                "country" => Arr::get($parameters, 'country'),
+                'msisdn' => Arr::get($parameters, 'mobile_number'),
+                "statementDescription" => Arr::get($parameters, 'meta.description'),
+                "reason" => Arr::get($parameters, 'meta.reason'),
+                'returnUrl' => $parameters['callback_url'] ?? route(config('payment-gateways.routes.callback.name'), [
                         'reference' => $parameters['reference'],
                         'provider' => $this->provider,
                     ]),
             ]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
             checkoutSecret: null,
-            checkoutUrl: $paystack['data']['authorization_url'],
+            checkoutUrl: $pawapay['redirectUrl'],
             expires: $parameters['expires'],
-            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 
     public function findTransaction(string $reference): TransactionData
     {
-        $transaction = $this->request('GET', "transaction/verify/$reference");
+        $transaction = $this->request('GET', "deposits/$reference");
 
-        return $this->transactionDTO($transaction['data']);
+        return $this->transactionDTO($transaction[0]);
     }
 
     public function listTransactions(
@@ -72,39 +71,22 @@ class PaystackProvider extends AbstractProvider
         ?string $amount = null,
         ?string $customer = null,
     ): array|null {
-        $payload = array_filter([
-            'from' => $from,
-            'to' => $to,
-            'page' => $page,
-            'customer' => $customer,
-            'status' => $status,
-            'amount' => $amount,
-        ]);
-
-        $response = $this->request('GET', 'transaction', $payload);
-
-        return [
-            'meta' => [
-                'total' => Arr::get($response, 'meta.total'),
-                'page' => Arr::get($response, 'meta.page'),
-                'page_count' => Arr::get($response, 'meta.pageCount'),
-            ],
-            'data' => collect($response['data'])
-                ->map(fn ($transaction) => $this->transactionDTO($transaction))
-                ->toArray(),
-        ];
+        throw new Exception("This provider [$this->provider] does not support list transactions");
     }
 
     public function transactionDTO(array $transaction): TransactionData
     {
-        $date = Arr::get($transaction, 'transaction_date') ?? Arr::get($transaction, 'created_at');
+        $date = Arr::get($transaction, 'respondedByPayer') ?? Arr::get($transaction, 'created');
 
         return new TransactionData(
-            email: $transaction['customer']['email'],
-            meta: $transaction['metadata'],
-            amount: ($transaction['amount'] / 100),
+            email: null,
+            meta: [
+                'type' => $transaction['payer']['type'],
+                'address' => $transaction['payer']['address']['value'],
+            ],
+            amount: (int)$transaction['depositedAmount'],
             currency: $transaction['currency'],
-            reference: $transaction['reference'],
+            reference: $transaction['depositId'],
             provider: $this->provider,
             status: $transaction['status'],
             date: Carbon::parse($date)->toDateTimeString(),

@@ -2,18 +2,9 @@
 
 namespace Stephenjude\PaymentGateway;
 
-use BadMethodCallException;
-use ReflectionClass;
-use Stephenjude\PaymentGateway\Providers\AbstractProvider;
-use Stephenjude\PaymentGateway\Providers\PaystackProvider;
+use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
+use Stephenjude\PaymentGateway\Enums\Provider;
 
-/**
- * @method PaystackProvider paystack()
- * @method PaystackProvider flutterwave()
- * @method PaystackProvider monnify()
- * @method PaystackProvider stripe()
- * @method PaystackProvider paypal()
- */
 class PaymentGateway
 {
     public function __call(string $provider, array $arguments)
@@ -21,14 +12,8 @@ class PaymentGateway
         return static::make($provider);
     }
 
-    public static function make(string $proivder): AbstractProvider
+    public static function make(string $proivder): ProviderInterface
     {
-        $class = '\\Stephenjude\\PaymentGateway\\Providers\\'.ucwords($proivder).'Provider';
-
-        if (class_exists($class) && ! (new ReflectionClass($class))->isAbstract()) {
-            return new $class();
-        }
-
-        throw new BadMethodCallException("Undefined provider [$proivder] called.");
+        return Provider::integration($proivder);
     }
 }

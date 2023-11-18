@@ -87,6 +87,12 @@ return [
             'secret' => env('MONNIFY_SECRET'),
             'contract_code' => env('MONNIFY_CONTRACT_CODE'),
         ],
+        'pawapay' => [
+            'name' => 'pawapay',
+            'channels' => null,
+            'base_url' => env('PAWAPAY_API_URL', 'https://api.pawapay.cloud/'),
+            'secret' => env('PAWAPAY_SECRET'),
+        ],
         'seerbit' => [
             'name' => 'seerbit',
             'channels' => ['card', 'account', 'transfer', 'ussd'],

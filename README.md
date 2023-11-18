@@ -109,6 +109,30 @@ $transaction->status;
 $transaction->date;
 ```
 
+### Pawapay Setup
+
+Required Env Variables
+
+```
+PAWAPAY_SECRET=
+```
+Checkout
+
+```php 
+use \Stephenjude\PaymentGateway\Enums\Provider;
+use \Stephenjude\PaymentGateway\PaymentGateway;
+
+$pawapay = PaymentGateway::make(Provider::PAWAPAY())->initializeCheckout([
+    "amount" => 15,
+    "mobile_number" => "233593456789",
+    "country" => "ZMB",
+    'meta' => [
+        "description" => "Note of 4 to 22 chars",
+        "reason" => "Ticket to festival"
+    ]
+]);
+```
+
 ### Pay4Me Setup
 ```
 PAY4ME_PUBLIC=
