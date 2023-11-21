@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.2.0 - 2023-11-21
+
+- Pawapay integration.
+
 ## 2.1.2 - 2023-10-02
 
 - Changed transaction metadata to mixed type.
