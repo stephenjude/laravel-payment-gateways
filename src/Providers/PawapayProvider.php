@@ -33,7 +33,7 @@ class PawapayProvider extends AbstractProvider
             payload: [
                 'depositId' => Arr::get($parameters, 'reference'),
                 'amount' => "$amount", // Pawapay accepts amount as string
-                "country" => Arr::get($parameters, 'country'),
+                "country" => str(Arr::get($parameters, 'country'))->upper()->toString(),
                 "statementDescription" => Arr::get($parameters, 'meta.description'),
                 "reason" => Arr::get($parameters, 'meta.reason'),
                 'returnUrl' => $parameters['callback_url'] ?? route(config('payment-gateways.routes.callback.name'), [
