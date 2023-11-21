@@ -124,7 +124,6 @@ use \Stephenjude\PaymentGateway\PaymentGateway;
 
 $pawapay = PaymentGateway::make(Provider::PAWAPAY())->initializeCheckout([
     "amount" => 15,
-    "mobile_number" => "233593456789",
     "country" => "ZMB",
     'meta' => [
         "description" => "Note of 4 to 22 chars",

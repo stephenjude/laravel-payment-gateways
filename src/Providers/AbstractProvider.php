@@ -136,6 +136,7 @@ abstract class AbstractProvider implements ProviderInterface
             Provider::MONNIFY() => $response->json('responseMessage')
                 ?? $response->json('error').'. '.$response->json('error_description'),
             Provider::KLASHA() => $response->json('error').'. '.$response->json('message'),
+            Provider::PAWAPAY() => $response->json('errorMessage'),
             default => $response->reason()
         };
     }
