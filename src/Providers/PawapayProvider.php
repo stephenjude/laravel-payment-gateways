@@ -32,7 +32,7 @@ class PawapayProvider extends AbstractProvider
             path: 'v1/widget/sessions',
             payload: [
                 'depositId' => Arr::get($parameters, 'reference'),
-                'amount' => "$amount", // Pawapay accepts amount as string
+                'amount' => "$amount", // Pawapay accepts amount as stringpush
                 "country" => str(Arr::get($parameters, 'country'))->upper()->toString(),
                 "statementDescription" => Arr::get($parameters, 'meta.description'),
                 "reason" => Arr::get($parameters, 'meta.reason'),
