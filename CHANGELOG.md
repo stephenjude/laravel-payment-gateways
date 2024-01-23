@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 2.2.1 - 2024-01-23
+
+- Fixed payment confirmation for Seerbit.
+
 ## 2.2.0 - 2023-11-21
 
 - Pawapay integration.
