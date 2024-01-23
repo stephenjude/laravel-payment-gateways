@@ -78,11 +78,9 @@ class SeerbitProvider extends AbstractProvider
     {
         $transaction = $this->request('GET', "api/v2/payments/query/$reference");
 
-        if ($transaction['error']) {
+        if (isset($transaction['error'])) {
             throw new \Exception($transaction['message']);
         }
-
-        $transaction['data']['reference'] = $reference;
 
         return $this->transactionDTO($transaction['data']);
     }
@@ -109,7 +107,7 @@ class SeerbitProvider extends AbstractProvider
             ],
             amount: $transaction['payments']['amount'],
             currency: $transaction['payments']['currency'],
-            reference: $transaction['reference'],
+            reference: $transaction['payments']['paymentReference'],
             provider: $this->provider,
             status: $transaction['payments']['gatewayMessage'],
             date: Carbon::parse($transaction['payments']['transactionProcessedTime'])->toDateTimeString(),
