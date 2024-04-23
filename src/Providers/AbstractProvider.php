@@ -112,7 +112,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     protected function logResponse(string $provider, Response $response): void
     {
-        if (!config('payment-gateways.debug_mode')) {
+        if (! config('payment-gateways.debug_mode')) {
             return;
         }
 
