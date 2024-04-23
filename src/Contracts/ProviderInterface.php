@@ -15,6 +15,10 @@ interface ProviderInterface
      */
     public function initializePayment(array $parameters = []): SessionData;
 
+    public function setChannels(array|null $channels);
+
+    public function getChannels();
+
     public function getCheckout(string $sessionReference): ?SessionData;
 
     public function destroyCheckout(string $sessionReference): void;

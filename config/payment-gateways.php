@@ -107,6 +107,13 @@ return [
             'public' => env('PAYSTACK_PUBLIC'),
             'secret' => env('PAYSTACK_SECRET'),
         ],
+        'startbutton' => [
+            'name' => 'startbutton',
+            'channels' => ['card', 'bank', 'ussd', 'qr', 'mobile_money', 'bank_transfer', 'eft', 'payattitude'],
+            'base_url' => env('STARTBUTTON_API_URL', 'https://api.startbutton.tech/'),
+            'public' => env('STARTBUTTON_PUBLIC'),
+            'secret' => env('STARTBUTTON_SECRET'),
+        ],
         'flutterwave' => [
             'name' => 'flutterwave',
             'channels' => ['card', 'banktransfer', 'ussd', 'credit', 'mpesa', 'qr'],

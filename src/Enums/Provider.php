@@ -14,6 +14,7 @@ use Stephenjude\PaymentGateway\Providers\PawapayProvider;
 use Stephenjude\PaymentGateway\Providers\Pay4meProvider;
 use Stephenjude\PaymentGateway\Providers\PaystackProvider;
 use Stephenjude\PaymentGateway\Providers\SeerbitProvider;
+use Stephenjude\PaymentGateway\Providers\StartbuttonProvider;
 use Stephenjude\PaymentGateway\Providers\StripeProvider;
 
 enum Provider: string
@@ -26,6 +27,8 @@ enum Provider: string
     case STRIPE = 'stripe';
 
     case PAYSTACK = 'paystack';
+
+    case STARTBUTTON = 'startbutton';
 
     case PAY4ME = 'pay4me';
 
@@ -43,6 +46,7 @@ enum Provider: string
     {
         return match ($provider) {
             self::PAYSTACK() => new PaystackProvider(),
+            self::STARTBUTTON() => new StartbuttonProvider(),
             self::FLUTTERWAVE() => new FlutterwaveProvider(),
             self::PAY4ME() => new Pay4meProvider(),
             self::SEERBIT() => new SeerbitProvider(),
@@ -50,7 +54,7 @@ enum Provider: string
             self::STRIPE() => new StripeProvider(),
             self::KLASHA() => new KlashaProvider(),
             self::PAWAPAY() => new PawapayProvider(),
-            default => throw new BadMethodCallException("Undefined provider [$provider] called.")
+            default => throw new \RuntimeException("Undefined provider [$provider] called.")
         };
     }
 

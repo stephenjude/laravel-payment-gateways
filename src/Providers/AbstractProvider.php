@@ -112,7 +112,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     protected function logResponse(string $provider, Response $response): void
     {
-        if (! config('payment-gateways.debug_mode')) {
+        if (!config('payment-gateways.debug_mode')) {
             return;
         }
 
@@ -128,16 +128,17 @@ abstract class AbstractProvider implements ProviderInterface
     public function parseProviderError(Response $response): string
     {
         return match ($this->provider) {
-            Provider::STRIPE() => $response->json('error.message'),
-            Provider::PAYSTACK() => $response->json('message'),
+            Provider::PAYSTACK(),
+            Provider::STARTBUTTON(),
             Provider::FLUTTERWAVE() => $response->json('message'),
+            Provider::STRIPE() => $response->json('error.message'),
             Provider::PAY4ME() => $response->json('error.code').'. '.$response->json('error.message'),
             Provider::SEERBIT() => $response->json('error').'. '.$response->json('message'),
             Provider::MONNIFY() => $response->json('responseMessage')
                 ?? $response->json('error').'. '.$response->json('error_description'),
             Provider::KLASHA() => $response->json('error').'. '.$response->json('message'),
             Provider::PAWAPAY() => $response->json('errorMessage') ?? $response->reason(),
-            default => $response->reason()
+            default => $response->reason() ?? 'API error.'
         };
     }
 }
