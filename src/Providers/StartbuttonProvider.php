@@ -61,7 +61,7 @@ class StartbuttonProvider extends AbstractProvider
     public function findTransaction(string $reference): TransactionData
     {
         $transaction = $this->request('GET', "transaction/status/$reference");
-
+        
         return $this->transactionDTO($transaction['data']['transaction']);
     }
 
@@ -84,7 +84,7 @@ class StartbuttonProvider extends AbstractProvider
             meta: null,
             amount: ($transaction['amount'] / 100),
             currency: $transaction['currency'],
-            reference: $transaction['transactionReference'],
+            reference: $transaction['userTransactionReference'],
             provider: $this->provider,
             status: $transaction['status'],
             date: Carbon::parse($transaction['createdAt'])->toDateTimeString(),

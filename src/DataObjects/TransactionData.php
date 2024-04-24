@@ -20,9 +20,15 @@ class TransactionData extends Data
 
     public function isSuccessful(): bool
     {
-        // Paystack: success; Flutterwave: successful; Stripe: succeeded;
+        // Paystack: success; Flutterwave: successful; Stripe: succeeded; Startbutton: verified;
+        /**
+         * @description Paystack: success;
+         * Flutterwave: successful;
+         * Stripe: succeeded;
+         * Startbutton: verified;
+         */
         return match (strtolower($this->status)) {
-            'success', 'succeeded', 'successful', 'paid', 'approved', 'completed' => true,
+            'success', 'succeeded', 'successful', 'paid', 'approved', 'completed', 'verified' => true,
             default => false
         };
     }
@@ -38,7 +44,9 @@ class TransactionData extends Data
 
     public function failed(): bool
     {
-        // Paystack: failed; Flutterwave: failed; Stripe: failed;
+        /**
+         * @description Paystack: failed; Flutterwave: failed; Stripe: failed;
+         */
         return match (strtolower($this->status)) {
             'failed', 'expired' => true,
             default => false

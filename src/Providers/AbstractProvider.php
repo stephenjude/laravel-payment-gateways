@@ -99,7 +99,7 @@ abstract class AbstractProvider implements ProviderInterface
         return Cache::get($key);
     }
 
-    public function confirmTransaction(string $reference, ?SerializableClosure $closure): TransactionData|null
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure = null): TransactionData|null
     {
         $transaction = $this->findTransaction($reference);
 

@@ -23,7 +23,7 @@ interface ProviderInterface
 
     public function destroyCheckout(string $sessionReference): void;
 
-    public function confirmTransaction(string $reference, ?SerializableClosure $closure): ?TransactionData;
+    public function confirmTransaction(string $reference, ?SerializableClosure $closure = null): ?TransactionData;
 
     public function findTransaction(string $reference): TransactionData;
 
