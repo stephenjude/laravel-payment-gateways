@@ -52,7 +52,7 @@ class PaystackProvider extends AbstractProvider
             checkoutSecret: null,
             checkoutUrl: $paystack['data']['authorization_url'],
             expires: $parameters['expires'],
-            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::get($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 

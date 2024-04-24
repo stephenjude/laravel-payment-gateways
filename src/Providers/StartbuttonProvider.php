@@ -54,7 +54,7 @@ class StartbuttonProvider extends AbstractProvider
             checkoutSecret: null,
             checkoutUrl: $startbutton['data'],
             expires: $parameters['expires'],
-            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::get($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 

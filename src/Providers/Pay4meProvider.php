@@ -51,7 +51,7 @@ class Pay4meProvider extends AbstractProvider
             checkoutSecret: null,
             checkoutUrl: $pay4me['data']['authorization_url'],
             expires: $parameters['expires'],
-            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::get($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 

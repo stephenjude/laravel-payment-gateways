@@ -69,7 +69,7 @@ class SeerbitProvider extends AbstractProvider
                 checkoutSecret: null,
                 checkoutUrl: Arr::get($seerbit, 'data.payments.redirectLink'),
                 expires: $parameters['expires'],
-                closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
+                closure: Arr::get($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
             )
         );
     }

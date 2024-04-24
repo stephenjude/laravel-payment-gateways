@@ -70,7 +70,7 @@ class MonnifyProvider extends AbstractProvider
                 checkoutSecret: null,
                 checkoutUrl: $monnify['responseBody']['checkoutUrl'],
                 expires: $parameters['expires'],
-                closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
+                closure: Arr::get($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
             )
         );
     }
