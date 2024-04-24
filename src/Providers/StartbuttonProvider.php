@@ -61,7 +61,7 @@ class StartbuttonProvider extends AbstractProvider
     public function findTransaction(string $reference): TransactionData
     {
         $transaction = $this->request('GET', "transaction/status/$reference");
-        
+
         return $this->transactionDTO($transaction['data']['transaction']);
     }
 
