@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.0 - 2024-04-24
+
+- Integrate Startbutton APIs
+- Laravel 11 compatibility.
+
 ## 2.2.1 - 2024-01-23
 
 - Fixed payment confirmation for Seerbit.
