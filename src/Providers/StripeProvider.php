@@ -41,7 +41,7 @@ class StripeProvider extends AbstractProvider
             checkoutSecret: null,
             checkoutUrl: $stripe['url'],
             expires: $parameters['expires'],
-            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 

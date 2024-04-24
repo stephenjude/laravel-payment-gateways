@@ -53,7 +53,7 @@ class FlutterwaveProvider extends AbstractProvider
                 checkoutSecret: null,
                 checkoutUrl: $flutterwave['data']['link'],
                 expires: $parameters['expires'],
-                closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+                closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
             )
         );
     }

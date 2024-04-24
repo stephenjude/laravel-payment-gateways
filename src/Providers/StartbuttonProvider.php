@@ -39,7 +39,7 @@ class StartbuttonProvider extends AbstractProvider
                 'reference' => Arr::get($parameters, 'reference'),
                 'paymentMethods' => $this->getChannels(),
                 'metadata' => Arr::get($parameters, 'meta'),
-                'redirect_url' => $parameters['callback_url']
+                'redirectUrl' => $parameters['callback_url']
                     ?? route(config('payment-gateways.routes.callback.name'), [
                         'reference' => $parameters['reference'],
                         'provider' => $this->provider,
@@ -54,7 +54,7 @@ class StartbuttonProvider extends AbstractProvider
             checkoutSecret: null,
             checkoutUrl: $startbutton['data'],
             expires: $parameters['expires'],
-            closure: $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            closure: Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
         ));
     }
 

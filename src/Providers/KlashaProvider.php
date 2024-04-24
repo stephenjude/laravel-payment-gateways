@@ -32,7 +32,7 @@ class KlashaProvider extends AbstractProvider
                 'provider' => $this->provider,
             ]),
             'expires' => $parameters['expires'],
-            'closure' => $parameters['closure'] ? new SerializableClosure($parameters['closure']) : null,
+            'closure' => Arr::has($parameters, 'closure') ? new SerializableClosure($parameters['closure']) : null,
             'extra' => [
                 'email' => $parameters['email'],
                 'currency' => $parameters['currency'],
