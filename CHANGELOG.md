@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.1 - 2024-05-08
+
+- Fixed Klasha initialization error by @stephenjude
+
 ## 3.0.0 - 2024-04-24
 
 - Integrate Startbutton APIs
