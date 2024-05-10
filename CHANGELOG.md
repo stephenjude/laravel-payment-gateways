@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.2 - 2024-05-10
+
+- Fixed Monnify payment status and verification by @stephenjude
+- Add partner parameter and default partner for Startbutton integration by @stephenjude
+
 ## 3.0.1 - 2024-05-08
 
 - Fixed Klasha initialization error by @stephenjude
