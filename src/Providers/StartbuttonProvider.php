@@ -33,6 +33,7 @@ class StartbuttonProvider extends AbstractProvider
             method: 'POST',
             path: 'transaction/initialize',
             payload: [
+                'partner' => Arr::get($parameters, 'partner', 'Paystack'),
                 'email' => Arr::get($parameters, 'email'),
                 'amount' => $amount,
                 'currency' => Arr::get($parameters, 'currency'),
@@ -47,7 +48,7 @@ class StartbuttonProvider extends AbstractProvider
             ]
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
