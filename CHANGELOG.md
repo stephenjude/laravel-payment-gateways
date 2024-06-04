@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.3 - 2024-06-04
+
+- Make Startbutton `partner` parameter optional
+
 ## 3.0.2 - 2024-05-10
 
 - Fixed Monnify payment status and verification by @stephenjude
