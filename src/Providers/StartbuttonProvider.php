@@ -48,7 +48,7 @@ class StartbuttonProvider extends AbstractProvider
             ])
         );
 
-        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn() => new SessionData(
+        return Cache::remember($parameters['session_cache_key'], $parameters['expires'], fn () => new SessionData(
             provider: $this->provider,
             sessionReference: $parameters['reference'],
             paymentReference: null,
