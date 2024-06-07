@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.4 - 2024-06-07
+
+- Make debug mode Laravel compliant.
+- Make Startbutton's USD default payment channel null
+
 ## 3.0.3 - 2024-06-04
 
 - Make Startbutton `partner` parameter optional
