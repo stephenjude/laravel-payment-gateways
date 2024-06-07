@@ -72,6 +72,8 @@ abstract class AbstractProvider implements ProviderInterface
         $this->logResponse($this->provider, $response);
 
         if ($response->failed()) {
+            dd($response->json(), $payload);
+
             throw new Exception($response->reason().': '.$this->parseProviderError($response));
         }
 

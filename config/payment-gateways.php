@@ -20,7 +20,7 @@ return [
     /*
      * Debug mode set to true logs all the HTTP response to your application log file
      */
-    'debug_mode' => true,
+    'debug_mode' => env('APP_DEBUG'),
 
     /*
      * All payment transactions are verified on the callback route.
