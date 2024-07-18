@@ -91,6 +91,7 @@ return [
             'name' => 'pawapay',
             'channels' => null,
             'base_url' => env('PAWAPAY_API_URL', 'https://api.pawapay.cloud/'),
+            'public' => env('PAWAPAY_PUBLIC'),
             'secret' => env('PAWAPAY_SECRET'),
         ],
         'seerbit' => [
