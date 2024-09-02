@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.5 - 2024-09-02
+
+- Bump deps
+
 ## 3.0.4 - 2024-06-07
 
 - Make debug mode Laravel compliant.
