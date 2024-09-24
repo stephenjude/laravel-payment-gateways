@@ -57,7 +57,7 @@ class Pay4meProvider extends AbstractProvider
 
     public function findTransaction(string $reference): TransactionData
     {
-        $response = $this->request('GET', $this->baseUrl."api/transactions/verify/$reference");
+        $response = $this->request('GET', "api/transactions/verify/$reference");
 
         return $this->transactionDTO($response['data']);
     }
