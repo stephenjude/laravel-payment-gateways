@@ -119,7 +119,7 @@ class MonnifyProvider extends AbstractProvider
     {
         return new TransactionData(
             email: $transaction['customerDTO']['email'],
-            meta: $transaction['metaData'],
+            meta: $transaction['metaData'] ?? null,
             amount: $transaction['amount'],
             currency: $transaction['currencyCode'],
             reference: $transaction['paymentReference'],
