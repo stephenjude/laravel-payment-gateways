@@ -15,9 +15,9 @@ interface ProviderInterface
      */
     public function initializePayment(array $parameters = []): SessionData;
 
-    public function setChannels(array|null $channels);
+    public function setChannels(?array $channels): self;
 
-    public function getChannels();
+    public function getChannels(): ?array;
 
     public function getCheckout(string $sessionReference): ?SessionData;
 
@@ -35,7 +35,7 @@ interface ProviderInterface
         ?string $reference = null,
         ?string $amount = null,
         ?string $customer = null, // this could be email or id
-    ): array|null;
+    ): ?array;
 
     public function transactionDTO(array $transaction): TransactionData;
 }
