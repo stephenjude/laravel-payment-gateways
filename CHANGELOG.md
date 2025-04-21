@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.8 - 2025-04-21
+
+### What's Changed
+
+* hotfix: metadata is not always present by @eyounelson in https://github.com/stephenjude/laravel-payment-gateways/pull/21
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.0.7...3.0.8
+
 ## 3.0.7 - 2025-02-01
 
 - Removed debug statement by @eyounelson  in #20
