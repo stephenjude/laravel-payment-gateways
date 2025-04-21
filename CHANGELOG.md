@@ -2,6 +2,18 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.9 - 2025-04-21
+
+### What's Changed
+
+* Add return types to payment provider interface by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/22
+
+### New Contributors
+
+* @stephenjude made their first contribution in https://github.com/stephenjude/laravel-payment-gateways/pull/22
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.0.8...3.0.9
+
 ## 3.0.8 - 2025-04-21
 
 ### What's Changed
