@@ -29,6 +29,8 @@ class StartbuttonProvider extends AbstractProvider
 
         $this->secretKey = $this->publicKey;
 
+        $currency = Arr::get($parameters, 'currency');
+
         $channels = ! in_array(strtoupper($currency), ['USD']) ? $this->getChannels() : null;
 
         $startbutton = $this->request(
@@ -38,7 +40,7 @@ class StartbuttonProvider extends AbstractProvider
                 'partner' => Arr::get($parameters, 'partner'),
                 'email' => Arr::get($parameters, 'email'),
                 'amount' => $amount,
-                'currency' => $currency = Arr::get($parameters, 'currency'),
+                'currency' => $currency,
                 'reference' => Arr::get($parameters, 'reference'),
                 'paymentMethods' => $channels,
                 'metadata' => Arr::get($parameters, 'meta'),
