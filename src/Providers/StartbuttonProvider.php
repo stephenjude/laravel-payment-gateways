@@ -16,11 +16,11 @@ class StartbuttonProvider extends AbstractProvider
 
     public function initializeCheckout(array $parameters = []): SessionData
     {
-        $parameters['reference'] = 'SBTN_'.Str::random(12);
+        $parameters['reference'] = 'SBTN_' . Str::random(12);
 
         $parameters['expires'] = config('payment-gateways.cache.session.expires');
 
-        $parameters['session_cache_key'] = config('payment-gateways.cache.session.key').$parameters['reference'];
+        $parameters['session_cache_key'] = config('payment-gateways.cache.session.key') . $parameters['reference'];
 
         /*
         * Convert and round decimals to the nearest integer because Paystack does not support decimal values.
@@ -28,6 +28,8 @@ class StartbuttonProvider extends AbstractProvider
         $amount = round(num: (Arr::get($parameters, 'amount') * 100), mode: PHP_ROUND_HALF_ODD);
 
         $this->secretKey = $this->publicKey;
+
+        $channels = ! in_array(strtoupper($currency), ['USD']) ? $this->getChannels() : null;
 
         $startbutton = $this->request(
             method: 'POST',
@@ -38,7 +40,7 @@ class StartbuttonProvider extends AbstractProvider
                 'amount' => $amount,
                 'currency' => $currency = Arr::get($parameters, 'currency'),
                 'reference' => Arr::get($parameters, 'reference'),
-                'paymentMethods' => strtoupper($currency) === 'USD' ? null : $this->getChannels(),
+                'paymentMethods' => $channels,
                 'metadata' => Arr::get($parameters, 'meta'),
                 'redirectUrl' => $parameters['callback_url']
                     ?? route(config('payment-gateways.routes.callback.name'), [
@@ -74,7 +76,7 @@ class StartbuttonProvider extends AbstractProvider
         ?string $reference = null,
         ?string $amount = null,
         ?string $customer = null,
-    ): array|null {
+    ): ?array {
         throw new Exception("This provider [$this->provider] does not support list transactions");
     }
 
