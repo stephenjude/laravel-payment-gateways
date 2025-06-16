@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.11 - 2025-06-16
+
+### What's Changed
+
+* clean up channel checks for Startbutton integration by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/23
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/stephenjude/laravel-payment-gateways/pull/24
+* Bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/stephenjude/laravel-payment-gateways/pull/25
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.0.10...3.0.11
+
 ## 3.0.10 - 2025-04-29
 
 - Clean up channel checks for Startbutton [#96010](https://github.com/stephenjude/laravel-payment-gateways/commit/96010a342a5588eb2cbbaeb1d5a1394494fd6ed9)
