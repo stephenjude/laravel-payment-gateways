@@ -12,8 +12,12 @@ class PaymentGateway
         return static::make($provider);
     }
 
-    public static function make(string $proivder): ProviderInterface
+    /**
+     * Static method for backward compatibility
+     * Uses the configured factory class directly
+     */
+    public static function make(string $provider): ProviderInterface
     {
-        return Provider::integration($proivder);
+        return Provider::integration($provider);
     }
 }

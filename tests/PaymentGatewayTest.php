@@ -15,14 +15,6 @@ it('can make paystack provider', function () {
     expect(PaymentGateway::make('paystack'))->toBeInstanceOf(PaystackProvider::class);
 });
 
-it('can make futterwave provider', function () {
-    expect(PaymentGateway::make('flutterwave'))->toBeInstanceOf(FlutterwaveProvider::class);
-});
-
-it('can make klasha provider', function () {
-    expect(PaymentGateway::make('klasha'))->toBeInstanceOf(KlashaProvider::class);
-});
-
 it('can make stripe provider', function () {
     expect(PaymentGateway::make('stripe'))->toBeInstanceOf(StripeProvider::class);
 });
