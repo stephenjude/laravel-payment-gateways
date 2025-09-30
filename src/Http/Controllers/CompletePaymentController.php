@@ -9,7 +9,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
-use Stephenjude\PaymentGateway\PaymentGateway;
 
 class CompletePaymentController extends Controller
 {
