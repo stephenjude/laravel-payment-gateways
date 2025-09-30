@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.0.14 - 2025-09-30
+
+### What's Changed
+
+* Improve error messages and support contact text by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/27
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.0.13...3.0.14
+
 ## 3.0.13 - 2025-09-30
 
 - Include ‘Complete’ in successful checks. by @stephenjude
