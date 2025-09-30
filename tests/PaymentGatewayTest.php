@@ -1,8 +1,6 @@
 <?php
 
 use Stephenjude\PaymentGateway\PaymentGateway;
-use Stephenjude\PaymentGateway\Providers\FlutterwaveProvider;
-use Stephenjude\PaymentGateway\Providers\KlashaProvider;
 use Stephenjude\PaymentGateway\Providers\Pay4MeProvider;
 use Stephenjude\PaymentGateway\Providers\PaystackProvider;
 use Stephenjude\PaymentGateway\Providers\StripeProvider;
