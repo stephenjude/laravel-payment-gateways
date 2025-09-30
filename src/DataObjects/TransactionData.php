@@ -28,7 +28,7 @@ class TransactionData extends Data
          * Startbutton: verified;
          */
         return match (strtolower($this->status)) {
-            'success', 'succeeded', 'successful', 'paid', 'approved', 'completed', 'verified' => true,
+            'success', 'succeeded', 'successful', 'paid', 'approved', 'completed', 'complete', 'verified' => true,
             default => false
         };
     }
