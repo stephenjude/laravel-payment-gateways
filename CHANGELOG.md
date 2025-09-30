@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.1.0 - 2025-09-30
+
+### What's Changed
+
+* feat: make payment gateway factory configurable for custom implementations by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/28
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.0.14...3.1.0
+
 ## 3.0.14 - 2025-09-30
 
 ### What's Changed
