@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Stephenjude\PaymentGateway\PaymentGateway;
+use Stephenjude\PaymentGateway\Contracts\ProviderInterface;
 
 class CheckoutController extends Controller
 {
@@ -19,7 +19,10 @@ class CheckoutController extends Controller
     public function __invoke(Request $request, string $provider, string $reference)
     {
         try {
-            $paymentProvider = PaymentGateway::make($provider);
+            $gatewayFactory = config('payment-gateways.factory');
+
+            /** @var ProviderInterface $gatewayFactory */
+            $paymentProvider = $gatewayFactory::make($provider);
 
             $sessionData = $paymentProvider->getCheckout($reference);
 

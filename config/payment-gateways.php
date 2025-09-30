@@ -3,6 +3,26 @@
 return [
 
     /*
+     * The PaymentGateway class to use. This allows you to swap out the default
+     * implementation with a custom one for different environments or functionality.
+     *
+     * You can create your own implementation by extending the PaymentGateway class:
+     *
+     * Example custom implementation:
+     * class CustomGateway extends \Stephenjude\PaymentGateway\PaymentGateway {
+     *     public function createProvider(string $provider): ProviderInterface {
+     *         // Custom logic for creating providers
+     *         // You could add logging, different provider resolution, etc.
+     *         return parent::createProvider($provider);
+     *     }
+     * }
+     *
+     * Then set it in your .env or directly here:
+     * 'payment_factory' => App\Payments\CustomGateway::class,
+     */
+    'factory' => \Stephenjude\PaymentGateway\PaymentGateway::class,
+
+    /*
      * Company's support email is displayed to the user when they have completed their payment transactions.
      * When set to null the support email won't be displayed.
      */
