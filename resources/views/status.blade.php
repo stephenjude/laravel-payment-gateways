@@ -53,11 +53,11 @@
                 @endif
                 @if(config('payment-gateways.support_email'))
                     <hr>
-                    <p class="text-gray-600 my-2"> If you need further assistance, please contact us at <a
-                            class="text-blue-500"
-                            href="mailto:{{$support_mail = config('payment-gateways.support_email')}}">{{ $support_mail }}</a> or reach
-                        out to us via our social media
-                        platforms.
+                    <p class="text-gray-600 my-2">
+                        Need help? Tap Support or reach us at
+                        <a class="text-blue-500"
+                           href="mailto:{{$support_mail = config('payment-gateways.support_email')}}"
+                        >{{ $support_mail }}</a>
                     </p>
                 @endif
             </div>
