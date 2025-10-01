@@ -54,10 +54,11 @@
                 @if(config('payment-gateways.support_email'))
                     <hr>
                     <p class="text-gray-600 my-2">
-                        Need help? Tap Support or reach us at
+                        Need more help? Reach us anytime at
                         <a class="text-blue-500"
                            href="mailto:{{$support_mail = config('payment-gateways.support_email')}}"
                         >{{ $support_mail }}</a>
+                        or through our official social media channels.
                     </p>
                 @endif
             </div>

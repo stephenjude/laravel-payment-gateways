@@ -19,9 +19,9 @@ return [
      * Display messages for successful or failed payments.
      */
     'message' => [
-        'success' => 'Your payment transaction was successful. Please close the tab to continue.',
-        'failed' => 'Your payment transaction was not successful. Please close the tab to continue.',
-        'pending' => 'Your payment transaction is being processed by our payment partner. Please stay on this page and refresh in 5 minutes.',
+        'success' => 'Your payment was successful. You may now close this tab to continue.',
+        'failed' => 'Your payment was not successful. This may be due to an expired session, insufficient funds, or a network issue.',
+        'pending' => 'Your payment is currently being processed by our payment partner. Please remain on this page and refresh after 5 minutes to check the status.',
     ],
 
     /*
