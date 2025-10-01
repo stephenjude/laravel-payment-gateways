@@ -5,20 +5,7 @@ return [
     /*
      * The PaymentGateway class to use. This allows you to swap out the default
      * implementation with a custom one for different environments or functionality.
-     *
-     * You can create your own implementation by extending the PaymentGateway class:
-     *
-     * Example custom implementation:
-     * class CustomGateway extends \Stephenjude\PaymentGateway\PaymentGateway {
-     *     public function createProvider(string $provider): ProviderInterface {
-     *         // Custom logic for creating providers
-     *         // You could add logging, different provider resolution, etc.
-     *         return parent::createProvider($provider);
-     *     }
-     * }
-     *
-     * Then set it in your .env or directly here:
-     * 'payment_factory' => App\Payments\CustomGateway::class,
+     * You can create your own implementation by extending the PaymentGateway class
      */
     'factory' => \Stephenjude\PaymentGateway\PaymentGateway::class,
 
@@ -32,9 +19,9 @@ return [
      * Display messages for successful or failed payments.
      */
     'message' => [
-        'success' => 'Your payment transaction was successful. Please close the tab to continue.',
-        'failed' => 'Your payment transaction was not successful. Please close the tab to continue.',
-        'pending' => 'Your payment transaction is being processed by our payment partner. Please stay on this page and refresh in 5 minutes.',
+        'success' => 'Your payment was successful. You may now close this tab to continue.',
+        'failed' => 'Your payment was not successful. This may be due to an expired session, insufficient funds, or a network issue.',
+        'pending' => 'Your payment is currently being processed by our payment partner. Please remain on this page and refresh after 5 minutes to check the status.',
     ],
 
     /*
