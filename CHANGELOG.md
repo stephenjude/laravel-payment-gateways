@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.1.1 - 2025-10-01
+
+### What's Changed
+
+* chore: clean up user facing grammar. by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/29
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.1.0...3.1.1
+
 ## 3.1.0 - 2025-09-30
 
 ### What's Changed
