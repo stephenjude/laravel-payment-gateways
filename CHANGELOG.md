@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.1.2 - 2025-10-13
+
+### What's Changed
+
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/stephenjude/laravel-payment-gateways/pull/30
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.1.1...3.1.2
+
 ## 3.1.1 - 2025-10-01
 
 ### What's Changed
