@@ -2,6 +2,16 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 3.2.0 - 2025-11-29
+
+### What's Changed
+
+* feat: Add Laravel 12 support
+* Update GitHub Actions workflow to test against Laravel 10, 11, and 12
+* Update PHP version requirements to 8.2, 8.3, and 8.4
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.1.2...3.2.0
+
 ## 3.1.2 - 2025-10-13
 
 ### What's Changed
