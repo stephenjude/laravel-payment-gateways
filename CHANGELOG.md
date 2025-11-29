@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 4.0.0 - 2025-11-29
+
+### What's Changed
+
+* Bump actions/checkout from 5 to 6 by @dependabot[bot] in https://github.com/stephenjude/laravel-payment-gateways/pull/31
+* feat: Add Laravel 12 support by @stephenjude in https://github.com/stephenjude/laravel-payment-gateways/pull/32
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/3.1.2...4.0.0
+
 ## 3.2.0 - 2025-11-29
 
 ### What's Changed
