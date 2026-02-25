@@ -1,19 +1,19 @@
 # Laravel Payment Gateways
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/stephenjude/laravel-payment-gateways.svg?style=flat-square)](https://packagist.org/packages/stephenjude/laravel-payment-gateways)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/stephenjude/laravel-payment-gateways/run-tests?label=tests)](https://github.com/stephenjude/laravel-payment-gateways/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/stephenjude/laravel-payment-gateways/Check%20&%20fix%20styling?label=code%20style)](https://github.com/stephenjude/laravel-payment-gateways/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/stephenjude/laravel-payment-gateways/run-tests.yml?label=tests)](https://github.com/stephenjude/laravel-payment-gateways/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/stephenjude/laravel-payment-gateways/php-cs-fixer.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/stephenjude/laravel-payment-gateways/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/stephenjude/laravel-payment-gateways.svg?style=flat-square)](https://packagist.org/packages/stephenjude/laravel-payment-gateways)
 
 A simple Laravel implementation for all payment providers. This package supports 
-Paystack, Monnify, Pay4Me Pay, Seerbit Flutterwave, Klasha, and Stripe.
+Paystack, Monnify, Pay4Me Pay, Seerbit, Flutterwave, Klasha, and Stripe.
 
 ## Use Case
-Have you had to implement limited SDKs for accepting payments on your mobile app? 
+Have you had to implement limited SDKs to accept payments in your mobile app? 
 That's the problem this package solved.
 
 With this package, you can generate a payment link and 
-return it to your mobile app API call and the payment can be completed on the in-app browser.
+return it to your mobile app API call, and the payment can be completed on the in-app browser.
 
 When the customer completes their payment, this package verifies the payment and executes the code defined inside your 
 custom closure. 
@@ -34,7 +34,7 @@ function (TransactionData $payment){
 }
 ```
 
-If you are using this package on the web this closure is the place where you can return a redirect after updating the customer order or sending a notification.
+If you are using this package on the web, this closure is the place where you can return a redirect after updating the customer order or sending a notification.
 
 ## Installation
 
