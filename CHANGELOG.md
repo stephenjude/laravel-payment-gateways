@@ -2,6 +2,15 @@
 
 All notable changes to `laravel-payment-gateways` will be documented in this file.
 
+## 4.0.1 - 2026-03-30
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/stephenjude/laravel-payment-gateways/pull/33
+* Bump dependabot/fetch-metadata from 2.5.0 to 3.0.0 by @dependabot[bot] in https://github.com/stephenjude/laravel-payment-gateways/pull/34
+
+**Full Changelog**: https://github.com/stephenjude/laravel-payment-gateways/compare/4.0.0...4.0.1
+
 ## 4.0.0 - 2025-11-29
 
 ### What's Changed
